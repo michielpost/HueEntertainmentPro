@@ -2,7 +2,6 @@ using HueEntertainmentPro.Database;
 using HueEntertainmentPro.Database.Models;
 using HueEntertainmentPro.Services.Extensions;
 using HueEntertainmentPro.Shared.Interfaces;
-using HueEntertainmentPro.Shared.Models;
 using HueEntertainmentPro.Shared.Models.Requests;
 using Microsoft.EntityFrameworkCore;
 using ProtoBuf.Grpc;
@@ -104,8 +103,8 @@ namespace HueEntertainmentPro.Services
       dbContext.ProAreas.Add(newArea);
       await dbContext.SaveChangesAsync();
 
-      var area =  await GetProArea(new GuidRequest { Id = newArea.Id }, context);
-      if(area == null)
+      var area = await GetProArea(new GuidRequest { Id = newArea.Id }, context);
+      if (area == null)
       {
         throw new NullReferenceException($"Area is null. Id: {newArea.Id}");
       }

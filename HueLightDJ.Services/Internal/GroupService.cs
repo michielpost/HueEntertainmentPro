@@ -1,10 +1,10 @@
-using HueLightDJ.Effects;
 using HueApi.Entertainment.Extensions;
 using HueApi.Entertainment.Models;
+using HueLightDJ.Effects;
+using HueLightDJ.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HueLightDJ.Services.Models;
 
 namespace HueLightDJ.Services
 {
@@ -71,7 +71,7 @@ namespace HueLightDJ.Services
         max = min;
 
       Random r = new Random();
-      var numberOfGroups =  r.Next(min, max);
+      var numberOfGroups = r.Next(min, max);
 
       return orderRandom.ChunkBy(numberOfGroups);
 

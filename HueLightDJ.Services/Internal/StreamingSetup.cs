@@ -1,24 +1,24 @@
-using HueLightDJ.Effects;
 using HueApi;
+using HueApi.BridgeLocator;
 using HueApi.ColorConverters;
+using HueApi.ColorConverters.Original.Extensions;
 using HueApi.Entertainment.Models;
+using HueApi.Extensions;
+using HueApi.Models;
+using HueApi.Models.Requests;
+using HueLightDJ.Effects;
+using HueLightDJ.Services.Interfaces;
+using HueLightDJ.Services.Interfaces.Models;
+using HueLightDJ.Services.Models;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using HueApi.Models;
-using HueApi.BridgeLocator;
-using HueApi.Models.Requests;
-using HueApi.ColorConverters.Original.Extensions;
-using HueApi.Extensions;
-using HueLightDJ.Services.Models;
-using System.Text.Json;
-using Microsoft.Extensions.Options;
-using HueLightDJ.Services.Interfaces;
-using HueLightDJ.Services.Interfaces.Models;
-using System.Reflection;
 
 namespace HueLightDJ.Services
 {
@@ -33,11 +33,11 @@ namespace HueLightDJ.Services
     private static int BPM { get; set; } = 120;
     public static Ref<TimeSpan> WaitTime { get; set; } = TimeSpan.FromMilliseconds(500);
 
-    
+
 
     public static GroupConfiguration? CurrentConnection { get; set; }
 
-   
+
 
     private static Guid _groupId;
     private static CancellationTokenSource _cts = new();
@@ -57,7 +57,7 @@ namespace HueLightDJ.Services
       var configSection = await GetGroupConfigurationsAsync();
       var currentGroup = configSection.Where(x => x.Name == groupName).FirstOrDefault();
 
-      if(currentGroup == null)
+      if (currentGroup == null)
         return new List<MultiBridgeHuePosition>();
 
       return await GetLocationsAsync(currentGroup);
@@ -108,12 +108,12 @@ namespace HueLightDJ.Services
 
       var grouped = locations.GroupBy(x => x.Bridge);
 
-      foreach(var group in grouped)
+      foreach (var group in grouped)
       {
         var ip = group.Key;
         var groupId = group.First().GroupId;
         var config = configSection.SelectMany(x => x.Connections).Where(x => x.Ip == ip && x.GroupId == groupId).FirstOrDefault();
-        if(config != null)
+        if (config != null)
         {
           var serviceLocations = group.GroupBy(x => x.Id);
 
@@ -128,7 +128,7 @@ namespace HueLightDJ.Services
               Service = new ResourceIdentifier() { Rid = location.Key, Rtype = "entertainment" }
             };
 
-            foreach(var pos in location)
+            foreach (var pos in location)
             {
               serviceLoc.Positions.Add(new HuePosition(pos.X, pos.Y, 0));
             }
@@ -150,7 +150,7 @@ namespace HueLightDJ.Services
       {
         foreach (var conn in config.Connections)
         {
-          if(!conn.GroupId.HasValue)
+          if (!conn.GroupId.HasValue)
             continue;
 
           var client = new LocalHueApi(conn.Ip, conn.Key);
@@ -179,7 +179,7 @@ namespace HueLightDJ.Services
             var device = allResources.Data.Where(x => x.Id == light.Id).Select(x => x.Owner?.Rid).FirstOrDefault();
             var lightDeviceId = allResources.Data.Where(x => x.Id == device).Select(x => x.Services?.Where(x => x.Rtype == "light").FirstOrDefault()?.Rid).FirstOrDefault();
 
-            if(lightDeviceId.HasValue)
+            if (lightDeviceId.HasValue)
               await client.Light.UpdateAsync(lightDeviceId.Value, alertCommand);
           }
         }
@@ -225,7 +225,7 @@ namespace HueLightDJ.Services
       Layers = new List<EntertainmentLayer>() { baseLayer, effectLayer };
       CurrentConnection = currentGroup;
       HuePosition? locationCenter = new HuePosition(0, 0, 0);
-      if(currentGroup.LocationCenter != null)
+      if (currentGroup.LocationCenter != null)
         locationCenter = new HuePosition(currentGroup.LocationCenter.X, currentGroup.LocationCenter.Y, currentGroup.LocationCenter.Z);
 
       EffectSettings.LocationCenter = locationCenter ?? new HuePosition(0, 0, 0);
@@ -354,7 +354,7 @@ namespace HueLightDJ.Services
 
     public async Task SetBrightnessFilter(double value)
     {
-      if(value > 1)
+      if (value > 1)
         value = value / 100;
 
       if (value > 1)
@@ -365,7 +365,7 @@ namespace HueLightDJ.Services
         stream.BrightnessFilter = value;
       }
 
-      await hub.SendAsync("StatusMsg", $"Brightness set to: {(1-value)*100}");
+      await hub.SendAsync("StatusMsg", $"Brightness set to: {(1 - value) * 100}");
 
 
       await hub.StatusChanged();

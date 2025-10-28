@@ -22,8 +22,8 @@ namespace HueEntertainmentPro.Services
           Username = req.Username,
           StreamingClientKey = req.StreamingClientKey,
           Name = req.Name,
-           BridgeId = req.BridgeId,
-           CreatedDate = DateTime.UtcNow
+          BridgeId = req.BridgeId,
+          CreatedDate = DateTime.UtcNow
         };
         dbContext.Bridges.Add(bridge);
       }
@@ -44,7 +44,7 @@ namespace HueEntertainmentPro.Services
     public async Task DeleteBridge(Shared.Models.Requests.GuidRequest req, CallContext context = default)
     {
       var bridge = await dbContext.Bridges.Where(x => x.Id == req.Id).FirstOrDefaultAsync();
-      if(bridge != null)
+      if (bridge != null)
       {
         dbContext.Bridges.Remove(bridge);
         await dbContext.SaveChangesAsync();
@@ -54,7 +54,7 @@ namespace HueEntertainmentPro.Services
     public async Task<Shared.Models.Bridge?> GetBridge(Shared.Models.Requests.GuidRequest req, CallContext context = default)
     {
       var bridge = await dbContext.Bridges.Where(x => x.Id == req.Id).FirstOrDefaultAsync();
-      if(bridge == null)
+      if (bridge == null)
         return null;
 
       return bridge.ToApiModel();

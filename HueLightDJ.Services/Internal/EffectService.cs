@@ -1,18 +1,18 @@
-using HueLightDJ.Effects;
-using HueLightDJ.Effects.Base;
-using HueLightDJ.Effects.Layers;
 using HueApi.ColorConverters;
 using HueApi.Entertainment.Extensions;
 using HueApi.Entertainment.Models;
+using HueLightDJ.Effects;
+using HueLightDJ.Effects.Base;
+using HueLightDJ.Effects.Layers;
+using HueLightDJ.Services.Interfaces;
+using HueLightDJ.Services.Interfaces.Models;
+using HueLightDJ.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using HueLightDJ.Services.Models;
-using HueLightDJ.Services.Interfaces;
-using HueLightDJ.Services.Interfaces.Models;
 
 namespace HueLightDJ.Services
 {
@@ -70,7 +70,7 @@ namespace HueLightDJ.Services
       var all = GetEffectTypes();
       var groupEffectsTypes = GetGroupEffectTypes();
 
-     
+
 
       List<EffectList> baseEffects = new();
       List<EffectViewModel> shortEffects = new List<EffectViewModel>();
@@ -88,7 +88,7 @@ namespace HueLightDJ.Services
         };
         effect.HasColorPicker = hueEffectAtt.HasColorPicker;
 
-        if(!string.IsNullOrEmpty(hueEffectAtt.DefaultColor))
+        if (!string.IsNullOrEmpty(hueEffectAtt.DefaultColor))
         {
           effect.Color = hueEffectAtt.DefaultColor;
           effect.IsRandom = false;
@@ -129,7 +129,7 @@ namespace HueLightDJ.Services
       }
 
       List<string> iteratorNames = new List<string>();
-      foreach(var name in Enum.GetNames(typeof(IteratorEffectMode)))
+      foreach (var name in Enum.GetNames(typeof(IteratorEffectMode)))
       {
         iteratorNames.Add(name);
       }
@@ -154,7 +154,7 @@ namespace HueLightDJ.Services
 
     public void StopEffects()
     {
-      foreach(var layer in layerInfo)
+      foreach (var layer in layerInfo)
       {
         layer.Value?.CancellationTokenSource?.Cancel();
       }
@@ -168,7 +168,7 @@ namespace HueLightDJ.Services
 
       Task.Run(async () =>
       {
-        while(!autoModeCts.IsCancellationRequested)
+        while (!autoModeCts.IsCancellationRequested)
         {
           StartRandomEffect(AutoModeHasRandomEffects);
 
@@ -227,20 +227,20 @@ namespace HueLightDJ.Services
         if (!string.IsNullOrEmpty(colorHex))
           color = new RGBColor(colorHex);
 
-       
-        if(isGroupEffect)
+
+        if (isGroupEffect)
         {
           //get group
           var selectedGroup = GroupService.GetAll(layer).Where(x => x.Name == group).Select(x => x.Lights).FirstOrDefault();
 
-          if(selectedGroup!= null)
+          if (selectedGroup != null)
             StartEffect(cts.Token, selectedEffect, selectedGroup.SelectMany(x => x), group!, waitTime, color, iteratorMode, secondaryIteratorMode);
         }
         else
         {
           StartEffect(cts.Token, selectedEffect, layer, waitTime, color);
         }
-        
+
       }
     }
 
@@ -254,8 +254,8 @@ namespace HueLightDJ.Services
       if (group == null)
         group = GroupService.GetRandomGroup();
 
-      object?[] parametersArray = new object?[] { group, waitTime, color, iteratorMode, secondaryIteratorMode, ctsToken};
-     
+      object?[] parametersArray = new object?[] { group, waitTime, color, iteratorMode, secondaryIteratorMode, ctsToken };
+
       object? classInstance = Activator.CreateInstance(selectedEffect, null);
       methodInfo.Invoke(classInstance, parametersArray);
 
@@ -325,7 +325,7 @@ namespace HueLightDJ.Services
 
         GenerateRandomEffectSettings(out RGBColor hexColor, out _, out _);
 
-        if(effect != null)
+        if (effect != null)
           StartEffect(effect, hexColor.ToHex());
       }
 
@@ -365,7 +365,7 @@ namespace HueLightDJ.Services
         var section = group.Lights[i];
         GenerateRandomEffectSettings(out RGBColor hexColor, out IteratorEffectMode iteratorMode, out IteratorEffectMode iteratorSecondaryMode);
 
-        if(group.Lights.Count == 1
+        if (group.Lights.Count == 1
           && iteratorSecondaryMode != IteratorEffectMode.All
           && (effects[i] == typeof(HueLightDJ.Effects.Group.RandomColorsEffect) || effects[i] == typeof(HueLightDJ.Effects.Group.RandomColorloopEffect))
           )
@@ -437,7 +437,7 @@ namespace HueLightDJ.Services
     {
       StopAutoMode();
 
-      foreach(var layer in layerInfo)
+      foreach (var layer in layerInfo)
       {
         layer.Value?.CancellationTokenSource?.Cancel();
       }

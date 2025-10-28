@@ -20,7 +20,7 @@ namespace HueLightDJ.Services
         var hueClient = new LocalHueApi(request.Ip, request.Key);
         var entConfigsResult = await hueClient.EntertainmentConfiguration.GetAllAsync();
 
-        var groups =  entConfigsResult.Data.Select(x => new SimpleEntertainmentGroup()
+        var groups = entConfigsResult.Data.Select(x => new SimpleEntertainmentGroup()
         {
           Id = x.Id,
           Name = x.Metadata?.Name,
@@ -32,7 +32,7 @@ namespace HueLightDJ.Services
           Groups = groups
         };
       }
-      catch(UnauthorizedAccessException)
+      catch (UnauthorizedAccessException)
       {
         return new EntertainmentGroupResult
         {
@@ -117,7 +117,7 @@ namespace HueLightDJ.Services
           Username = result.Username
         };
       }
-      catch(Exception ex) when (ex.Message.Contains("link button not pressed", StringComparison.InvariantCultureIgnoreCase))
+      catch (Exception ex) when (ex.Message.Contains("link button not pressed", StringComparison.InvariantCultureIgnoreCase))
       {
         return new Interfaces.Models.RegisterEntertainmentResult()
         {
@@ -125,7 +125,7 @@ namespace HueLightDJ.Services
           ErrorMessage = "Link button not pressed. Please press the link button on the bridge and try again."
         };
       }
-      catch(Exception)
+      catch (Exception)
       {
         return new Interfaces.Models.RegisterEntertainmentResult()
         {

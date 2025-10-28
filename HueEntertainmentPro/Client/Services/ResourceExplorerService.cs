@@ -12,7 +12,7 @@ namespace HueEntertainmentPro.Client.Services
       var localHueApi = new LocalHueApi(bridge.Ip, bridge.Username, new HttpClient());
       localHueApi.SetBaseAddress(new Uri($"{NavigationManager.BaseUri}hueproxy/{bridge.Ip}/"));
 
-     // Console.WriteLine("Base URL: " + $"{NavigationManager.BaseUri}/hueproxy/{bridge.Ip}/");
+      // Console.WriteLine("Base URL: " + $"{NavigationManager.BaseUri}/hueproxy/{bridge.Ip}/");
 
       return localHueApi;
     }

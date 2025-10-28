@@ -1,6 +1,5 @@
 using HueLightDJ.Services.Interfaces.Models;
 using Microsoft.JSInterop;
-using System.ServiceModel.Channels;
 
 namespace HueLightDJ.Blazor.Controls
 {
@@ -21,7 +20,7 @@ namespace HueLightDJ.Blazor.Controls
       {
         return jsRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./hueJsInterop.js").AsTask();
-          });
+      });
     }
 
     public async ValueTask<string> Prompt(string message)

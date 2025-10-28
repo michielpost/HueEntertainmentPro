@@ -3,7 +3,6 @@ using HueApi.Models.Responses;
 using HueEntertainmentPro.Server.Services;
 using HueEntertainmentPro.Services;
 using HueEntertainmentPro.Shared.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 
