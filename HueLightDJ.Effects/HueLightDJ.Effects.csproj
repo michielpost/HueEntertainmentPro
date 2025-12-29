@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HueApi" Version="3.0.0" />
-    <PackageReference Include="HueApi.ColorConverters" Version="3.0.0" />
-    <PackageReference Include="HueApi.Entertainment" Version="3.0.0" />
+    <PackageReference Include="HueApi" Version="3.1.0" />
+    <PackageReference Include="HueApi.ColorConverters" Version="3.1.0" />
+    <PackageReference Include="HueApi.Entertainment" Version="3.1.0" />
   </ItemGroup>
 
 </Project>

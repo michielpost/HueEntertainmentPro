@@ -98,7 +98,7 @@ else
             {
 				Console.WriteLine("yes: " + Rtype);
 
-                var resources = await localHueApi.GetResourcesAsync();
+                var resources = await localHueApi.Resource.GetAllAsync();
                 HueResources = resources.Data;
             }
             else
