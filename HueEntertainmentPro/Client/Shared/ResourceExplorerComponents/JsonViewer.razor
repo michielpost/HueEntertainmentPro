@@ -3,17 +3,17 @@
 @using HueEntertainmentPro.Client.Services
 @inject ResourceExplorerService ResourceExplorerService
 
-<div class="json-node" style="margin-left:@(Level * 10)px">
+<div class="json-node json-content" style="margin-left:@(Level * 10)px">
     @if (!string.IsNullOrEmpty(Key))
     {
-        <b>@Key:</b>
+        <b>@Key: </b>
     }
-    <div class="json-content">
+
         @if (Element.ValueKind == JsonValueKind.Object)
         {
             // Detect HueResource (must have rid + rtype properties)
             if (Element.TryGetProperty("rid", out var ridProp) &&
-            Element.TryGetProperty("rtype", out var rtypeProp))
+              Element.TryGetProperty("rtype", out var rtypeProp))
             {
                 // Deserialize into your HueResource type
                 var resource = Element.Deserialize<ResourceIdentifier>();
@@ -89,7 +89,6 @@
         {
             <span>null</span>
         }
-    </div>
 </div>
 
 @code {

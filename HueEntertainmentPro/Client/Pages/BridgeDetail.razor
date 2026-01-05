@@ -1,4 +1,5 @@
 @page "/bridge/{Id:guid}"
+@page "/bridge/{*Ip}"
 @using HueApi.Models.Clip
 @using HueEntertainmentPro.Client.Services
 @using HueEntertainmentPro.Client.Shared.ResourceExplorerComponents
@@ -14,6 +15,8 @@
 @inject IDialogService DialogService
 @inject IToastService ToastService
 @inject ResourceExplorerService ResourceExplorerService
+
+<PageTitle>Bridge Details</PageTitle>
 
 <h3>Bridge Details</h3>
 
@@ -54,30 +57,40 @@
         <FluentLabel>No entertainment groups found for this bridge.</FluentLabel>
     }
 
-    <h4 style="margin-top: 20px;">Bridge Config</h4>
-   <p>
-        Explore more bridge details on the <a href="/resource-explorer/@Id">Resource Explorer</a>.<br />
-        View <a href="http://@bridge.Ip/description.xml" target="_blank">description.xml</a>.<br />
-   </p>
-    @if (bridgeConfig == null)
-    {
-        <FluentProgressRing>Loading bridge config...</FluentProgressRing>
-    }
-    else
-    {
-        <JsonViewer Element="@JsonSerializer.SerializeToElement(bridgeConfig)" Bridge="@bridge" />
-    }
-
 
 }
-else
+else if (Id.HasValue)
 {
     <FluentProgressRing>Loading bridge details...</FluentProgressRing>
 }
 
+@if (bridgeConfig == null)
+{
+    <FluentProgressRing>Loading bridge config...</FluentProgressRing>
+}
+else
+{
+    <h4 style="margin-top: 20px;">Bridge Config</h4>
+    <p>
+        @if (Id.HasValue)
+        {
+            <span>
+                Explore more bridge details on the <a href="/resource-explorer/@Id">Resource Explorer</a>.
+            </span>
+            <br />
+        }
+        View <a href="http://@Ip/description.xml" target="_blank">description.xml</a>.<br />
+    </p>
+
+    <JsonViewer Element="@JsonSerializer.SerializeToElement(bridgeConfig)" />
+}
+
 @code {
     [Parameter]
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
+
+    [Parameter]
+    public string? Ip { get; set; }
 
     private Bridge? bridge;
     private BridgeConfig? bridgeConfig;
@@ -92,23 +105,37 @@ else
             entertainmentGroups = null;
 
             // Load bridge details
-            bridge = await BridgeService.GetBridge(new GuidRequest() { Id = Id });
-            if (bridge == null)
+            if (Id.HasValue)
+            {
+                bridge = await BridgeService.GetBridge(new GuidRequest() { Id = Id.Value });
+                Ip = bridge?.Ip;
+            }
+
+            if (bridge == null && Ip == null)
             {
                 errorMessage = "Bridge not found.";
                 return;
             }
 
-            var localHueClient = ResourceExplorerService.GetHueClient(bridge);
-            bridgeConfig = await localHueClient.GetConfigAsync();
-
-            // Load entertainment groups
-            var result = await HueSetupService.GetEntertainmentGroupsAsync(new HueLightDJ.Services.Interfaces.Models.Requests.HueSetupRequest()
+            if (bridge != null)
             {
-                Ip = bridge.Ip,
-                Key = bridge.Username
-            });
-            entertainmentGroups = result.Groups.AsQueryable();
+                //TODO: Why does fail when using bridge (which includes key) and returns more data?
+                var localHueClient = ResourceExplorerService.GetHueClient(bridge.Ip);
+                bridgeConfig = await localHueClient.GetConfigAsync();
+
+                // Load entertainment groups
+                var result = await HueSetupService.GetEntertainmentGroupsAsync(new HueLightDJ.Services.Interfaces.Models.Requests.HueSetupRequest()
+                {
+                    Ip = bridge.Ip,
+                    Key = bridge.Username
+                });
+                entertainmentGroups = result.Groups.AsQueryable();
+            }
+            else if (Ip != null)
+            {
+                var localHueClient = ResourceExplorerService.GetHueClient(Ip);
+                bridgeConfig = await localHueClient.GetConfigAsync();
+            }
         }
         catch (Exception ex)
         {

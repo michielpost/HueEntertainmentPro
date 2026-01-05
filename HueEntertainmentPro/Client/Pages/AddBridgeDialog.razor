@@ -12,31 +12,46 @@
 <FluentDialog Modal="true" TrapFocus="true" Header="Add Hue Bridge">
     <FluentCard>
         <FluentStack Orientation="Orientation.Vertical" Style="padding: 16px; min-width: 400px;">
-            
-                <FluentListbox 
-                               Items="@DiscoveredIps"
+
+            <FluentCard>
+
+                <FluentListbox Items="@DiscoveredIps"
                                Height="150px"
                                Label="Discovered IP Addresses"
                                OptionValue="@(i => i.BridgeId)"
-                           ValueChanged="@(async (string id) => OnBridgeIdSelected(id))">
-                      <OptionTemplate>
-                          @context.IpAddress
-                      </OptionTemplate>
+                               ValueChanged="@(async (string id) => OnBridgeIdSelected(id))">
+                    <OptionTemplate>
+                        @context.IpAddress
+                    </OptionTemplate>
                 </FluentListbox>
 
-            <FluentCheckbox @bind-Value="@EditIp"
-                            Label="Manually enter IP" />
+            </FluentCard>
 
-            <FluentTextField Label="IP Address"
-                             @bind-Value="@BridgeConfig.IpAddress"
-                             Placeholder="e.g., 192.168.1.100"
-                             Disabled="@(!EditIp)" />
 
-          
-           
+            <FluentCard>
+
+                <FluentCheckbox @bind-Value="@EditIp"
+                                Label="Manually enter IP" />
+
+                <FluentTextField Label="IP Address"
+                                 @bind-Value="@BridgeConfig.IpAddress"
+                                 Placeholder="e.g., 192.168.1.100"
+                                 Disabled="@(!EditIp)" />
+
+                @if (IsFormValid)
+                {
+                    <br />
+                    <FluentAnchor Appearance="Appearance.Neutral" Href="@($"/bridge/{BridgeConfig.IpAddress}")" Target="_blank">
+                        View Bridge Config
+                    </FluentAnchor>
+                }
+
+            </FluentCard>
+
+
+            <FluentCard>
                 <FluentCheckbox @bind-Value="@ShowSecrets"
-                                Label="Manually enter username and key"
-                                />
+                                Label="Manually enter username and key" />
 
                 @if (ShowSecrets)
                 {
@@ -47,6 +62,8 @@
                                      @bind-Value="@BridgeConfig.StreamingClientKey"
                                      Placeholder="Streaming Client Key" />
                 }
+            </FluentCard>
+
 
             <FluentTextField Label="Name (optional)"
                              @bind-Value="@BridgeConfig.Name"
@@ -59,6 +76,7 @@
 
             <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Right" Style="margin-top: 16px;">
                 <FluentButton Appearance="Appearance.Neutral" OnClick="@CloseDialog">Cancel</FluentButton>
+
                 @if (ShowSecrets)
                 {
                     <FluentButton Appearance="Appearance.Accent"
@@ -75,7 +93,7 @@
                         Push Bridge Button and Click Save
                     </FluentButton>
                 }
-               
+
             </FluentStack>
         </FluentStack>
     </FluentCard>
@@ -136,11 +154,11 @@
             if (!ShowSecrets)
             {
                 var setup = await HueSetupService.RegisterAsync(new HueLightDJ.Services.Interfaces.Models.Requests.HueSetupRequest
-                    {
-                        Ip = BridgeConfig.IpAddress
-                    });
+                {
+                    Ip = BridgeConfig.IpAddress
+                });
 
-                if(!string.IsNullOrEmpty(setup?.ErrorMessage))
+                if (!string.IsNullOrEmpty(setup?.ErrorMessage))
                 {
                     ErrorMessage = setup.ErrorMessage;
                     StateHasChanged();
@@ -169,10 +187,10 @@
                 try
                 {
                     var setup = await HueSetupService.GetEntertainmentGroupsAsync(new HueLightDJ.Services.Interfaces.Models.Requests.HueSetupRequest
-                        {
-                            Ip = BridgeConfig.IpAddress,
-                            Key = BridgeConfig.Username
-                        });
+                    {
+                        Ip = BridgeConfig.IpAddress,
+                        Key = BridgeConfig.Username
+                    });
 
                     if (!string.IsNullOrEmpty(setup?.ErrorMessage))
                     {

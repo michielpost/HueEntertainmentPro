@@ -17,6 +17,17 @@ namespace HueEntertainmentPro.Client.Services
       return localHueApi;
     }
 
+    public LocalHueApi GetHueClient(string ip)
+    {
+      //Use new HttpClient because setting DangerousAcceptAnyServerCertificateValidator is not supported
+      var localHueApi = new LocalHueApi(ip, null, new HttpClient());
+      localHueApi.SetBaseAddress(new Uri($"{NavigationManager.BaseUri}hueproxy/{ip}/"));
+
+      // Console.WriteLine("Base URL: " + $"{NavigationManager.BaseUri}/hueproxy/{bridge.Ip}/");
+
+      return localHueApi;
+    }
+
     public string CreateResourceLink(Guid id, string? rtype, Guid? rid = null)
     {
       if (rtype == null)

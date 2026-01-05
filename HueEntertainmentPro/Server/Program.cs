@@ -95,6 +95,6 @@ app.MapHub<EventMonitorHub>("/eventmonitorhub");
 
 app.MapRazorPages();
 app.MapControllers();
-app.MapFallbackToFile("index.html");
+app.MapFallbackToFile("{**path}", "index.html");
 
 app.Run();
