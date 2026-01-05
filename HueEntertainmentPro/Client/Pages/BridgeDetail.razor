@@ -1,14 +1,19 @@
 @page "/bridge/{Id:guid}"
+@using HueApi.Models.Clip
+@using HueEntertainmentPro.Client.Services
+@using HueEntertainmentPro.Client.Shared.ResourceExplorerComponents
 @using HueEntertainmentPro.Shared.Interfaces
 @using HueEntertainmentPro.Shared.Models
 @using HueEntertainmentPro.Shared.Models.Requests
 @using HueLightDJ.Services.Interfaces
 @using HueLightDJ.Services.Interfaces.Models
+@using System.Text.Json
 @inject IBridgeDataService BridgeService
 @inject IHueSetupService HueSetupService
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 @inject IToastService ToastService
+@inject ResourceExplorerService ResourceExplorerService
 
 <h3>Bridge Details</h3>
 
@@ -31,6 +36,7 @@
         </FluentStack>
     </FluentStack>
 
+
     <h4 style="margin-top: 20px;">Entertainment Groups</h4>
     @if (entertainmentGroups == null)
     {
@@ -47,6 +53,22 @@
     {
         <FluentLabel>No entertainment groups found for this bridge.</FluentLabel>
     }
+
+    <h4 style="margin-top: 20px;">Bridge Config</h4>
+   <p>
+        Explore more bridge details on the <a href="/resource-explorer/@Id">Resource Explorer</a>.<br />
+        View <a href="http://@bridge.Ip/description.xml" target="_blank">description.xml</a>.<br />
+   </p>
+    @if (bridgeConfig == null)
+    {
+        <FluentProgressRing>Loading bridge config...</FluentProgressRing>
+    }
+    else
+    {
+        <JsonViewer Element="@JsonSerializer.SerializeToElement(bridgeConfig)" Bridge="@bridge" />
+    }
+
+
 }
 else
 {
@@ -58,6 +80,7 @@ else
     public Guid Id { get; set; }
 
     private Bridge? bridge;
+    private BridgeConfig? bridgeConfig;
     private IQueryable<SimpleEntertainmentGroup>? entertainmentGroups;
     private string? errorMessage;
 
@@ -65,6 +88,9 @@ else
     {
         try
         {
+            bridgeConfig = null;
+            entertainmentGroups = null;
+
             // Load bridge details
             bridge = await BridgeService.GetBridge(new GuidRequest() { Id = Id });
             if (bridge == null)
@@ -72,6 +98,9 @@ else
                 errorMessage = "Bridge not found.";
                 return;
             }
+
+            var localHueClient = ResourceExplorerService.GetHueClient(bridge);
+            bridgeConfig = await localHueClient.GetConfigAsync();
 
             // Load entertainment groups
             var result = await HueSetupService.GetEntertainmentGroupsAsync(new HueLightDJ.Services.Interfaces.Models.Requests.HueSetupRequest()
