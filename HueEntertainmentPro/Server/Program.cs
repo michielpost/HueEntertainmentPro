@@ -26,6 +26,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddFluentUIComponents();
 builder.Services.AddSignalR();
 
+builder.Services.AddControllers();
+
 builder.Services.AddGrpc();
 builder.Services.AddResponseCompression(opts =>
 {
@@ -70,10 +72,11 @@ else
   app.UseHsts();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
+
 
 //Reverse Proxy to Hue Bridge, disabled in DEMO mode
 if (app.Environment.EnvironmentName != "DEMO")
