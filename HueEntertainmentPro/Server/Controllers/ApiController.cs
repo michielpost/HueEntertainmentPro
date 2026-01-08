@@ -1,4 +1,4 @@
-using HueLightDJ.Services;  // ✅ KORREKT - Nicht . Internal
+using HueLightDJ.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HueEntertainmentPro.Server.Controllers
@@ -15,21 +15,34 @@ namespace HueEntertainmentPro.Server.Controllers
     }
 
     /// <summary>
-    /// Triggers a beat effect with the specified intensity
+    /// Triggers a beat effect
     /// </summary>
-    /// <param name="intensity">Beat intensity (typically 0.0 to 1.0)</param>
-    [HttpPost("beat")]
-    public IActionResult Beat([FromBody] double intensity)
+    [Route("beat")]
+    [HttpPost]
+    [HttpGet]
+    public IActionResult Beat()
     {
       try
       {
-        _effectService.Beat(intensity);
-        return Ok(new { success = true, message = "Beat triggered successfully" });
+        _effectService.Beat();
+        return Ok(new { success = true });
       }
       catch (System.Exception ex)
       {
         return StatusCode(500, new { success = false, error = ex.Message });
       }
+    }
+
+    [HttpPost("setcolors")]
+    public void SetColors([FromBody] string[,] matrix)
+    {
+      ManualControlService.SetColors(matrix);
+    }
+
+    [HttpPost("setcolorslist")]
+    public void SetColors([FromBody] List<List<string>> matrix)
+    {
+      ManualControlService.SetColors(matrix);
     }
 
     /// <summary>

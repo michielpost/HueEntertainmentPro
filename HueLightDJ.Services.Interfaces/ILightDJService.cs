@@ -53,7 +53,7 @@ namespace HueLightDJ.Services.Interfaces
     //void SetColorsList(List<List<string>> matrix);
 
     [OperationContract]
-    Task Beat(DoubleRequest value, CallContext context = default);
+    Task Beat(CallContext context = default);
 
     [OperationContract]
     Task Disconnect(CallContext context = default);

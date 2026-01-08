@@ -456,7 +456,7 @@ namespace HueLightDJ.Services
       StartTouchEffect(CancellationToken.None, randomTouch, waitTime, null, x, y);
     }
 
-    public void Beat(double intensity)
+    public void Beat()
     {
       var effectLayer = GetLayer(isBaseLayer: false);
 

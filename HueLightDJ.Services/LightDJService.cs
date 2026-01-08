@@ -128,9 +128,9 @@ namespace HueLightDJ.Services
     //{
     //  ManualControlService.SetColors(matrix);
     //}
-    public Task Beat(DoubleRequest req, CallContext context = default)
+    public Task Beat(CallContext context = default)
     {
-      effectService.Beat(req.Value);
+      effectService.Beat();
       return Task.CompletedTask;
     }
 
