@@ -10,26 +10,25 @@
                    OnLuminanceChanged="@OnLuminanceChanged"
                    StorageName="theme" />
 
-<FluentSelect Label="Theme"
-              Width="250px"
-              Items="@(Enum.GetValues<DesignThemeModes>())"
-              @bind-SelectedOption="@Mode" />
+<FluentCard Class="page-card" Style="padding: 1.5rem; max-width: 500px;">
+    <FluentStack Orientation="Orientation.Vertical" Gap="16">
+        <FluentLabel Typo="Typography.PaneHeader">Appearance</FluentLabel>
+        <FluentSelect Label="Theme"
+                      Width="250px"
+                      Items="@(Enum.GetValues<DesignThemeModes>())"
+                      @bind-SelectedOption="@Mode" />
+    </FluentStack>
+</FluentCard>
 
 @code {
-
     public DesignThemeModes Mode { get; set; }
-
-
-
     public OfficeColor? OfficeColor { get; set; }
 
     void OnLoaded(LoadedEventArgs e)
     {
-        //DemoLogger.WriteLine($"Loaded: {(e.Mode == DesignThemeModes.System ? "System" : "")} {(e.IsDark ? "Dark" : "Light")}");
     }
 
     void OnLuminanceChanged(LuminanceChangedEventArgs e)
     {
-        //DemoLogger.WriteLine($"Changed: {(e.Mode == DesignThemeModes.System ? "System" : "")} {(e.IsDark ? "Dark" : "Light")}");
     }
 }

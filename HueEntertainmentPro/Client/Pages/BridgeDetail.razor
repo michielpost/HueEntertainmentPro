@@ -18,7 +18,7 @@
 
 <PageTitle>Bridge Details</PageTitle>
 
-<h3>Bridge Details</h3>
+<h1>Bridge Details</h1>
 
 @if (errorMessage != null)
 {
@@ -29,40 +29,46 @@
 
 @if (bridge != null)
 {
-    <FluentStack Orientation="Orientation.Vertical" Gap="10">
-        <FluentLabel Typo="Typography.Header">Name: @bridge.Name</FluentLabel>
-        <FluentLabel Typo="Typography.Header">Bridge ID: @bridge.BridgeId</FluentLabel>
-        <FluentLabel Typo="Typography.Header">ip: @bridge.Ip</FluentLabel>
-        <FluentStack Orientation="Orientation.Horizontal" Gap="10">
-            <FluentButton Appearance="Appearance.Accent" @onclick="ShowEditNameDialog">Edit Name</FluentButton>
-            <FluentButton Appearance="Appearance.Accent" @onclick="ShowEditIpDialog">Edit IP</FluentButton>
-            <FluentButton Appearance="Appearance.Neutral" @onclick="ShowDeleteConfirmation">Delete Bridge</FluentButton>
+    <FluentCard Class="page-card" Style="padding: 1.5rem; margin-bottom: 1.5rem;">
+        <FluentStack Orientation="Orientation.Vertical" Gap="12">
+            <FluentLabel Typo="Typography.PaneHeader">@bridge.Name</FluentLabel>
+            <FluentStack Orientation="Orientation.Vertical" Gap="4">
+                <FluentLabel Typo="Typography.Body">Bridge ID: @bridge.BridgeId</FluentLabel>
+                <FluentLabel Typo="Typography.Body">IP: @bridge.Ip</FluentLabel>
+            </FluentStack>
+            <FluentStack Orientation="Orientation.Horizontal" Gap="10" Style="margin-top: 8px;">
+                <FluentButton Appearance="Appearance.Accent" @onclick="ShowEditNameDialog" IconStart="@(new Icons.Regular.Size16.Edit())">Edit Name</FluentButton>
+                <FluentButton Appearance="Appearance.Accent" @onclick="ShowEditIpDialog" IconStart="@(new Icons.Regular.Size16.NetworkAdapter())">Edit IP</FluentButton>
+                <FluentButton Appearance="Appearance.Neutral" @onclick="ShowDeleteConfirmation" IconStart="@(new Icons.Regular.Size16.Delete())">Delete Bridge</FluentButton>
+            </FluentStack>
         </FluentStack>
-    </FluentStack>
+    </FluentCard>
 
-
-    <h4 style="margin-top: 20px;">Entertainment Groups</h4>
+    <h3>Entertainment Groups</h3>
     @if (entertainmentGroups == null)
     {
         <FluentProgressRing>Loading entertainment groups...</FluentProgressRing>
     }
     else if (entertainmentGroups.Any())
     {
-        <FluentDataGrid Items="@entertainmentGroups" TGridItem="SimpleEntertainmentGroup">
-            <PropertyColumn Title="Name" Property="@(g => g.Name)" Sortable="true" Align="Align.Start" />
-            <PropertyColumn Title="Lights" Property="@(g => g.LightCount)" Sortable="true" Align="Align.Start" />
-        </FluentDataGrid>
+        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
+            <FluentDataGrid Items="@entertainmentGroups" TGridItem="SimpleEntertainmentGroup" RowSize="DataGridRowSize.Medium">
+                <PropertyColumn Title="Name" Property="@(g => g.Name)" Sortable="true" Align="Align.Start" />
+                <PropertyColumn Title="Lights" Property="@(g => g.LightCount)" Sortable="true" Align="Align.Start" />
+            </FluentDataGrid>
+        </FluentCard>
     }
     else
     {
-        <FluentLabel>No entertainment groups found for this bridge.</FluentLabel>
+        <FluentLabel Typo="Typography.Body">No entertainment groups found for this bridge.</FluentLabel>
     }
-
-
 }
 else if (Id.HasValue)
 {
-    <FluentProgressRing>Loading bridge details...</FluentProgressRing>
+    <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
+        <FluentProgressRing />
+        <FluentLabel Typo="Typography.Body">Loading bridge details...</FluentLabel>
+    </FluentStack>
 }
 
 @if (bridgeConfig == null)
@@ -71,17 +77,20 @@ else if (Id.HasValue)
 }
 else
 {
-    <h4 style="margin-top: 20px;">Bridge Config</h4>
-    <p>
-        @if (Id.HasValue)
-        {
-            <span>
-                Explore more bridge details on the <a href="/resource-explorer/@Id">Resource Explorer</a>.
-            </span>
-            <br />
-        }
-        View <a href="http://@Ip/description.xml" target="_blank">description.xml</a>.<br />
-    </p>
+    <h3>Bridge Config</h3>
+    <FluentCard Class="page-card" Style="padding: 1rem; margin-bottom: 1rem;">
+        <FluentStack Orientation="Orientation.Vertical" Gap="8">
+            @if (Id.HasValue)
+            {
+                <FluentLabel>
+                    Explore more bridge details on the <a href="/resource-explorer/@Id">Resource Explorer</a>.
+                </FluentLabel>
+            }
+            <FluentLabel>
+                View <a href="http://@Ip/description.xml" target="_blank">description.xml</a>.
+            </FluentLabel>
+        </FluentStack>
+    </FluentCard>
 
     <JsonViewer Element="@JsonSerializer.SerializeToElement(bridgeConfig)" />
 }

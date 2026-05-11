@@ -1,9 +1,13 @@
 @inherits LayoutComponentBase
 
-<FluentLayout>
-    <FluentHeader>
-        Hue Entertainment Pro
+<FluentLayout Class="page-layout">
+    <FluentHeader Class="app-header">
+        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" Gap="12">
+            <FluentIcon Value="@(new Icons.Regular.Size24.Lightbulb())" />
+            <FluentLabel Typo="Typography.Header">Hue Entertainment Pro</FluentLabel>
+        </FluentStack>
     </FluentHeader>
+
     <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
         <NavMenu />
         <FluentBodyContent Class="body-content">
@@ -19,11 +23,21 @@
             </ErrorBoundary>
         </FluentBodyContent>
     </FluentStack>
-    <FluentFooter>
-        <a href="https://github.com/michielpost/HueEntertainmentPro" target="_blank">Hue Entertainment Pro on GitHub</a>
-        <FluentSpacer />
-        <a href="https://x.com/michielpostnl" target="_blank">Created by Michiel Post</a>
+
+    <FluentFooter Class="app-footer">
+        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" Gap="16">
+            <a href="https://github.com/michielpost/HueEntertainmentPro" target="_blank" class="footer-link">
+                <FluentIcon Value="@(new Icons.Regular.Size16.Branch())" />
+                <span>GitHub</span>
+            </a>
+            <FluentSpacer />
+            <a href="https://x.com/michielpostnl" target="_blank" class="footer-link">
+                <FluentIcon Value="@(new Icons.Regular.Size16.Person())" />
+                <span>Created by Michiel Post</span>
+            </a>
+        </FluentStack>
     </FluentFooter>
+
     <FluentToastProvider MaxToastCount="10" />
     <FluentDialogProvider />
     <FluentTooltipProvider />

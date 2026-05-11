@@ -14,37 +14,30 @@
 <PageTitle>Resource Explorer</PageTitle>
 
 <h1>Resource Explorer</h1>
+<FluentLabel Class="page-subtitle">Explore available resources on your bridges.</FluentLabel>
 
 @if (!Id.HasValue || selectedBridge == null)
 {
-    <p>Explore available resources on your bridges.</p>
-
     @if (bridges == null)
     {
-        <FluentProgressRing>Loading bridges...</FluentProgressRing>
+        <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
+            <FluentProgressRing />
+            <FluentLabel Typo="Typography.Body">Loading bridges...</FluentLabel>
+        </FluentStack>
     }
     else
     {
-        <FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart" Style="padding: 4px; ">
-            <FluentGridItem xs="12">
-
-                @* <FluentSelect Items=@bridgeOptions
-                              TOption="Option<Bridge>"
-                              OptionText="@(i => i.Text)"
-                              Placeholder="Select a Hue Bridge..."
-                              OptionValue="@(i => i.Value?.Id.ToString())"
-                              ValueChanged="@(async (string bridge) => await OnBridgeIdSelected(bridge))" /> *@
-
+        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem; max-width: 600px;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="8">
+                <FluentLabel Typo="Typography.PaneHeader">Select a bridge</FluentLabel>
                 <div class="link-list-vertical">
-
                     @foreach (var bridge in bridges)
                     {
                         <FluentNavLink Class="nav-link" Href="@ResourceExplorerService.CreateResourceLink(bridge.Id, null)">@bridge.Name (@bridge.Ip)</FluentNavLink>
                     }
                 </div>
-
-            </FluentGridItem>
-        </FluentGrid>
+            </FluentStack>
+        </FluentCard>
     }
 }
 else if (string.IsNullOrEmpty(Rtype))

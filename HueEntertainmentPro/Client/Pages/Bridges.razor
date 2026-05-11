@@ -10,26 +10,33 @@
 
 <h1>Bridges</h1>
 
-<FluentButton @onclick="OpenAddDialog">Add Bridge</FluentButton>
+<div class="page-actions">
+    <FluentButton @onclick="OpenAddDialog" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Add())">Add Bridge</FluentButton>
+</div>
 
 @if (bridges == null)
 {
-    <p><em>Loading...</em></p>
+    <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
+        <FluentProgressRing />
+        <FluentLabel Typo="Typography.Body">Loading bridges...</FluentLabel>
+    </FluentStack>
 }
 else
 {
-    <FluentDataGrid Id="bridgegrid" Items="@bridges" GridTemplateColumns="2fr 2fr 2fr" TGridItem="Bridge">
-        <TemplateColumn Title="Name" Sortable="true" Align="Align.Start">
-            <NavLink href="@($"/bridge/{context.Id}")">@context.Name</NavLink>
-        </TemplateColumn>
-        <PropertyColumn Title="IP" Property="@(b => b.Ip)" Sortable="true" Align="Align.Start" />
-        <PropertyColumn Title="Id" Property="@(b => b.Id)" Sortable="true" Align="Align.Start" />
-        <TemplateColumn Title="" Align="Align.Start">
-            <NavLink href="@($"/bridge/{context.Id}")">
-                <FluentIcon Value="@(new Icons.Regular.Size16.Pen())" />
-            </NavLink>
-        </TemplateColumn>
-    </FluentDataGrid>
+    <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
+        <FluentDataGrid Id="bridgegrid" Items="@bridges" GridTemplateColumns="2fr 2fr 2fr auto" TGridItem="Bridge" RowSize="DataGridRowSize.Medium">
+            <TemplateColumn Title="Name" Sortable="true" Align="Align.Start">
+                <NavLink href="@($"/bridge/{context.Id}")">@context.Name</NavLink>
+            </TemplateColumn>
+            <PropertyColumn Title="IP" Property="@(b => b.Ip)" Sortable="true" Align="Align.Start" />
+            <PropertyColumn Title="Id" Property="@(b => b.Id)" Sortable="true" Align="Align.Start" />
+            <TemplateColumn Title="" Align="Align.End">
+                <NavLink href="@($"/bridge/{context.Id}")" title="Edit">
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Edit())" />
+                </NavLink>
+            </TemplateColumn>
+        </FluentDataGrid>
+    </FluentCard>
 }
 
 

@@ -10,49 +10,42 @@
 @using Microsoft.FluentUI.AspNetCore.Components
 
 <FluentDialog Modal="true" TrapFocus="true" Header="Add Hue Bridge">
-    <FluentCard>
-        <FluentStack Orientation="Orientation.Vertical" Style="padding: 16px; min-width: 400px;">
-
-            <FluentCard>
-
+    <FluentStack Orientation="Orientation.Vertical" Style="padding: 16px; min-width: 420px; gap: 16px;">
+        <FluentCard Style="padding: 12px;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="8">
+                <FluentLabel Typo="Typography.Body" Weight="FontWeight.Bold">Discovered IP Addresses</FluentLabel>
                 <FluentListbox Items="@DiscoveredIps"
                                Height="150px"
-                               Label="Discovered IP Addresses"
                                OptionValue="@(i => i.BridgeId)"
                                ValueChanged="@(async (string id) => OnBridgeIdSelected(id))">
                     <OptionTemplate>
                         @context.IpAddress
                     </OptionTemplate>
                 </FluentListbox>
+            </FluentStack>
+        </FluentCard>
 
-            </FluentCard>
-
-
-            <FluentCard>
-
+        <FluentCard Style="padding: 12px;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="10">
                 <FluentCheckbox @bind-Value="@EditIp"
                                 Label="Manually enter IP" />
-
                 <FluentTextField Label="IP Address"
                                  @bind-Value="@BridgeConfig.IpAddress"
                                  Placeholder="e.g., 192.168.1.100"
                                  Disabled="@(!EditIp)" />
-
                 @if (IsFormValid)
                 {
-                    <br />
                     <FluentAnchor Appearance="Appearance.Neutral" Href="@($"/bridge/{BridgeConfig.IpAddress}")" Target="_blank">
                         View Bridge Config
                     </FluentAnchor>
                 }
+            </FluentStack>
+        </FluentCard>
 
-            </FluentCard>
-
-
-            <FluentCard>
+        <FluentCard Style="padding: 12px;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="10">
                 <FluentCheckbox @bind-Value="@ShowSecrets"
                                 Label="Manually enter username and key" />
-
                 @if (ShowSecrets)
                 {
                     <FluentTextField Label="Username"
@@ -62,41 +55,40 @@
                                      @bind-Value="@BridgeConfig.StreamingClientKey"
                                      Placeholder="Streaming Client Key" />
                 }
-            </FluentCard>
-
-
-            <FluentTextField Label="Name (optional)"
-                             @bind-Value="@BridgeConfig.Name"
-                             Placeholder="Name to identity the bridge" />
-
-
-            <FluentLabel Weight="FontWeight.Bold" Style="color: var(--error); margin-top: 8px;">
-                @ErrorMessage
-            </FluentLabel>
-
-            <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Right" Style="margin-top: 16px;">
-                <FluentButton Appearance="Appearance.Neutral" OnClick="@CloseDialog">Cancel</FluentButton>
-
-                @if (ShowSecrets)
-                {
-                    <FluentButton Appearance="Appearance.Accent"
-                                  OnClick="@AddBridge"
-                                  Disabled="@(!IsFormValid)">
-                        Save
-                    </FluentButton>
-                }
-                else
-                {
-                    <FluentButton Appearance="Appearance.Accent"
-                                  OnClick="@AddBridge"
-                                  Disabled="@(!IsFormValid)">
-                        Push Bridge Button and Click Save
-                    </FluentButton>
-                }
-
             </FluentStack>
+        </FluentCard>
+
+        <FluentTextField Label="Name (optional)"
+                         @bind-Value="@BridgeConfig.Name"
+                         Placeholder="Name to identify the bridge" />
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <FluentMessageBar Intent="MessageIntent.Error">
+                @ErrorMessage
+            </FluentMessageBar>
+        }
+
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Right" Style="margin-top: 8px;">
+            <FluentButton Appearance="Appearance.Neutral" OnClick="@CloseDialog">Cancel</FluentButton>
+            @if (ShowSecrets)
+            {
+                <FluentButton Appearance="Appearance.Accent"
+                              OnClick="@AddBridge"
+                              Disabled="@(!IsFormValid)">
+                    Save
+                </FluentButton>
+            }
+            else
+            {
+                <FluentButton Appearance="Appearance.Accent"
+                              OnClick="@AddBridge"
+                              Disabled="@(!IsFormValid)">
+                    Push Bridge Button and Click Save
+                </FluentButton>
+            }
         </FluentStack>
-    </FluentCard>
+    </FluentStack>
 </FluentDialog>
 
 @code {

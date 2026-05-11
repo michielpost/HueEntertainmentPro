@@ -11,128 +11,122 @@
 
 @if (bridges == null || proAreas == null)
 {
-    <p><em>Loading...</em></p>
+    <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 4rem;">
+        <FluentProgressRing />
+        <FluentLabel Typo="Typography.Body">Loading your setup...</FluentLabel>
+    </FluentStack>
 }
 else if (!bridges.Any() || !proAreas.Any())
 {
-
-    <text>
+    <FluentStack Orientation="Orientation.Vertical" Gap="16">
         <h1>Setup</h1>
-        <p>
+        <FluentLabel Class="page-subtitle">
             Combine entertainment areas from multiple bridges into one entertainment area.
             Display effects and visualize your room in 3d.
-        </p>
+        </FluentLabel>
 
-        <h2>1) Start by adding some bridges.</h2>
+        <FluentCard Class="page-card" Style="padding: 1.5rem;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="12">
+                <FluentLabel Typo="Typography.PaneHeader">1) Start by adding some bridges</FluentLabel>
+                @if (bridges.Any())
+                {
+                    <FluentLabel>You have already added @bridges.Count() bridge(s). You can add more.</FluentLabel>
+                    <FluentButton @onclick="OpenAddBridgeDialog" Appearance="Appearance.Accent">Add Another Bridge</FluentButton>
+                }
+                else
+                {
+                    <FluentLabel>You haven't added any bridges yet.</FluentLabel>
+                    <FluentLabel>Use the "Add Bridge" button below to add your Hue Bridges. You can add multiple bridges.</FluentLabel>
+                    <FluentButton @onclick="OpenAddBridgeDialog" Appearance="Appearance.Accent">Add Bridge</FluentButton>
+                }
+            </FluentStack>
+        </FluentCard>
 
-        @if (bridges.Any())
-        {
-            <p>You have already added @bridges.Count() bridge(s). You can add more.</p>
-
-            <FluentButton @onclick="OpenAddBridgeDialog">Add Another Bridge</FluentButton>
-
-        }
-        else
-        {
-            <p>You haven't added any bridges yet.</p>
-            <p>Use the "Add Bridge" button below to add your Hue Bridges. You can add multiple bridges.</p>
-
-            <FluentButton @onclick="OpenAddBridgeDialog" Appearance="Appearance.Accent">Add Bridge</FluentButton>
-
-        }
-
-        <br />
-        <br />
-        <h2>2) Combine multiple entertainment areas into one</h2>
-        <p>
-            Don't worry, you can also start with 1 bridge and 1 area to see what Hue Entertainment Pro can do.
-        </p>
-
-        @if (bridges.Any())
-        {
-            <p>You have added @bridges.Count() bridge(s). Now you can create entertainment areas by combining entertainment groups from your bridges.</p>
-            <FluentButton @onclick="OpenAddAreaDialog" Appearance="Appearance.Accent">Add Area</FluentButton>
-        }
-        else
-        {
-            <p>Once you have added some bridges, you can create entertainment areas by combining entertainment groups from your bridges.</p>
-        }
-
-    </text>
-
-
+        <FluentCard Class="page-card" Style="padding: 1.5rem;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="12">
+                <FluentLabel Typo="Typography.PaneHeader">2) Combine multiple entertainment areas into one</FluentLabel>
+                <FluentLabel>Don't worry, you can also start with 1 bridge and 1 area to see what Hue Entertainment Pro can do.</FluentLabel>
+                @if (bridges.Any())
+                {
+                    <FluentLabel>You have added @bridges.Count() bridge(s). Now you can create entertainment areas by combining entertainment groups from your bridges.</FluentLabel>
+                    <FluentButton @onclick="OpenAddAreaDialog" Appearance="Appearance.Accent">Add Area</FluentButton>
+                }
+                else
+                {
+                    <FluentLabel>Once you have added some bridges, you can create entertainment areas by combining entertainment groups from your bridges.</FluentLabel>
+                }
+            </FluentStack>
+        </FluentCard>
+    </FluentStack>
 }
 else if (proAreas.Any())
 {
     <h1>Entertainment Areas</h1>
 
-    <FluentButton @onclick="OpenAddAreaDialog">Add Area</FluentButton>
+    <div class="page-actions">
+        <FluentButton @onclick="OpenAddAreaDialog" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Add())">Add Area</FluentButton>
+    </div>
 
-    <FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart" Style="padding: 4px; ">
-
+    <FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart">
         @foreach (var area in proAreas)
         {
             <FluentGridItem xs="12" sm="6">
-                <FluentCard Style="margin-bottom: 16px;" MinimalStyle="true">
-                    <FluentStack Orientation="Orientation.Vertical" Gap="10">
-                        <FluentLabel Typo="Typography.Header">@area.Name</FluentLabel>
+                <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1.25rem;">
+                    <FluentStack Orientation="Orientation.Vertical" Gap="12">
+                        <FluentLabel Typo="Typography.Header" Weight="FontWeight.Bold">@area.Name</FluentLabel>
                         @if (area.Connections.Any())
                         {
-                            <FluentLabel>Entertainment Groups:</FluentLabel>
-
-                            @foreach (var conn in area.Connections)
-                            {
-                                <FluentLabel> - @conn.Name (@conn.Bridge.Ip / @conn.Bridge.Name)</FluentLabel>
-                            }
+                            <FluentLabel Typo="Typography.Body">Entertainment Groups:</FluentLabel>
+                            <FluentStack Orientation="Orientation.Vertical" Gap="4">
+                                @foreach (var conn in area.Connections)
+                                {
+                                    <FluentLabel Typo="Typography.Body">
+                                        <FluentIcon Value="@(new Icons.Regular.Size12.Circle())" /> @conn.Name (@conn.Bridge.Ip / @conn.Bridge.Name)
+                                    </FluentLabel>
+                                }
+                            </FluentStack>
                         }
                         else
                         {
-                            <FluentLabel>No bridges connected</FluentLabel>
+                            <FluentLabel Typo="Typography.Body">No bridges connected</FluentLabel>
                         }
 
-                        <FluentStack>
-                            <FluentButton @onclick="() => NavigateToArea(area.Id)">Edit</FluentButton>
-
+                        <FluentStack Orientation="Orientation.Horizontal" Gap="8" Style="margin-top: 8px;">
+                            <FluentButton @onclick="() => NavigateToArea(area.Id)" IconStart="@(new Icons.Regular.Size16.Edit())">Edit</FluentButton>
                             @if (area.Connections.Any())
                             {
-                                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(area.Id)">Start</FluentButton>
+                                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(area.Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
                             }
-
                         </FluentStack>
-
-
                     </FluentStack>
                 </FluentCard>
             </FluentGridItem>
         }
-
     </FluentGrid>
 }
 
-<h1>Demo Areas</h1>
+<h2>Demo Areas</h2>
 
-<FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart" Style="padding: 4px; ">
-
+<FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart">
     <FluentGridItem xs="12" sm="6">
-        <FluentCard Style="margin-bottom: 16px;" MinimalStyle="true">
-            <FluentStack Orientation="Orientation.Vertical" Gap="10">
-                <FluentLabel Typo="Typography.Header">Grid Demo</FluentLabel>
-                <FluentLabel>2 bridges with lights in a grid layout</FluentLabel>
-                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(ProAreaPlay.demo1Id)">Start</FluentButton>
+        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1.25rem;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="12">
+                <FluentLabel Typo="Typography.Header" Weight="FontWeight.Bold">Grid Demo</FluentLabel>
+                <FluentLabel Typo="Typography.Body">2 bridges with lights in a grid layout</FluentLabel>
+                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(ProAreaPlay.demo1Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
             </FluentStack>
         </FluentCard>
     </FluentGridItem>
 
     <FluentGridItem xs="12" sm="6">
-        <FluentCard Style="margin-bottom: 16px;" MinimalStyle="true">
-            <FluentStack Orientation="Orientation.Vertical" Gap="10">
-                <FluentLabel Typo="Typography.Header">Star Demo</FluentLabel>
-                <FluentLabel>Q42 Office Star Layout (32 lights)</FluentLabel>
-                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(ProAreaPlay.demo2Id)">Start</FluentButton>
+        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1.25rem;">
+            <FluentStack Orientation="Orientation.Vertical" Gap="12">
+                <FluentLabel Typo="Typography.Header" Weight="FontWeight.Bold">Star Demo</FluentLabel>
+                <FluentLabel Typo="Typography.Body">Q42 Office Star Layout (32 lights)</FluentLabel>
+                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(ProAreaPlay.demo2Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
             </FluentStack>
         </FluentCard>
     </FluentGridItem>
-
 </FluentGrid>
 
 
