@@ -1,0 +1,30 @@
+@implements IDialogContentComponent
+
+<FluentDialogHeader>Edit Bridge IP</FluentDialogHeader>
+<FluentDialogBody>
+    <FluentTextField Label="Bridge IP" @bind-Value="Content" Style="width: 100%;" />
+</FluentDialogBody>
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" @onclick="Submit">Save</FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" @onclick="Cancel">Cancel</FluentButton>
+</FluentDialogFooter>
+
+@code {
+    [CascadingParameter]
+    private FluentDialog? Dialog { get; set; }
+
+    [Parameter]
+    public string Content { get; set; } = string.Empty;
+
+    private async Task Submit()
+    {
+        if (Dialog != null)
+            await Dialog.CloseAsync(Content);
+    }
+
+    private async Task Cancel()
+    {
+        if (Dialog != null)
+            await Dialog.CancelAsync();
+    }
+}

@@ -7,5 +7,6 @@ namespace HueEntertainmentPro.Shared.Models.Requests
   {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
+    public string Ip { get; set; } = string.Empty;
   }
 }

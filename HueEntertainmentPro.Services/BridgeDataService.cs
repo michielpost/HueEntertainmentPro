@@ -72,6 +72,7 @@ namespace HueEntertainmentPro.Services
       if (existing != null)
       {
         existing.Name = req.Name;
+        existing.Ip = req.Ip;
         await dbContext.SaveChangesAsync();
       }
       else
