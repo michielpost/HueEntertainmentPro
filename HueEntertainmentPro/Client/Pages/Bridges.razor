@@ -21,6 +21,17 @@
         <FluentLabel Typo="Typography.Body">Loading bridges...</FluentLabel>
     </FluentStack>
 }
+else if (!bridges.Any())
+{
+    <FluentCard Class="page-card" MinimalStyle="true">
+        <div class="empty-state">
+            <FluentIcon Value="@(new Icons.Regular.Size48.Lightbulb())" Color="Color.Disabled" />
+            <h3>No bridges yet</h3>
+            <FluentLabel Typo="Typography.Body">Add your first Hue Bridge to get started. Make sure your bridge is connected to the same network.</FluentLabel>
+            <FluentButton @onclick="OpenAddDialog" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Add())">Add Bridge</FluentButton>
+        </div>
+    </FluentCard>
+}
 else
 {
     <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
@@ -54,10 +65,16 @@ else
         var dialog = await DialogService.ShowDialogAsync<AddBridgeDialog>(new DialogParameters()
         {
             Title = $"Add a bridge",
+            OnDialogResult = DialogService.CreateDialogCallback(this, HandleDialog),
         });
 
     }
 
+    private async Task HandleDialog(DialogResult result)
+    {
+        await OnInitializedAsync();
+        StateHasChanged();
+    }
 
     private void NavigateToBridgeDetails(Guid id)
     {

@@ -21,6 +21,17 @@
         <FluentLabel Typo="Typography.Body">Loading bridges...</FluentLabel>
     </FluentStack>
 }
+else if (!bridges.Any())
+{
+    <FluentCard Class="page-card" MinimalStyle="true">
+        <div class="empty-state">
+            <FluentIcon Value="@(new Icons.Regular.Size48.Alert())" Color="Color.Disabled" />
+            <h3>No bridges yet</h3>
+            <FluentLabel Typo="Typography.Body">Add a Hue Bridge first, then come back here to monitor its events.</FluentLabel>
+            <FluentButton Appearance="Appearance.Accent" @onclick="@(() => Navigation.NavigateTo("/bridges"))" IconStart="@(new Icons.Regular.Size16.Add())">Go to Bridges</FluentButton>
+        </div>
+    </FluentCard>
+}
 else
 {
     <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
@@ -39,7 +50,16 @@ else
                         }
                         else
                         {
-                            <FluentButton OnClick="() => Unsubscribe(item.Id)" Appearance="Appearance.Neutral" IconStart="@(new Icons.Regular.Size16.Stop())">Disconnect</FluentButton>
+                            <FluentStack Orientation="Orientation.Horizontal" Gap="12" VerticalAlignment="VerticalAlignment.Center">
+                                <FluentButton OnClick="() => Unsubscribe(item.Id)" Appearance="Appearance.Neutral" IconStart="@(new Icons.Regular.Size16.Stop())">Disconnect</FluentButton>
+                                <FluentBadge Appearance="Appearance.Accent">Connected</FluentBadge>
+                            </FluentStack>
+                        }
+                        @if (subscribedBridges.Contains(item.Id) && !events.Any(x => x.BridgeIp == item.Ip))
+                        {
+                            <FluentLabel Typo="Typography.Body" Style="margin-top: 12px; color: var(--neutral-foreground-hint);">
+                                Waiting for events... Try switching a light on or off.
+                            </FluentLabel>
                         }
                         <FluentDataGrid Items="@events.Where(x => x.BridgeIp == item.Ip).OrderByDescending(x => x.CreationTime).ThenByDescending(x => x.SendTime).Take(100).AsQueryable()" ResizableColumns=true Style="width: 100%; margin-top: 12px;" AutoFit="true" RowSize="DataGridRowSize.Medium">
                             <PropertyColumn Sortable="true" Property="x => x.CreationTime" Title="Time" />
@@ -54,7 +74,7 @@ else
                             }
                             @if (events.Where(x => x.EventDetails.IdV1 != null).Any())
                             {
-                                <PropertyColumn Property="x => x.EventDetails.IdV1" Title="Name" />
+                                <PropertyColumn Property="x => x.EventDetails.IdV1" Title="Id V1" />
                             }
                             <TemplateColumn Title="Data">
                                 <ul>

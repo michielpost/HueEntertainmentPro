@@ -46,7 +46,7 @@
                 <PropertyColumn Title="Entertainment Group" Property="@(g => g.Name)" Sortable="true" Align="Align.Start" />
                 <TemplateColumn Title="Action" Align="Align.End">
                     <FluentStack Orientation="Orientation.Horizontal" Gap="8">
-                        <FluentButton Appearance="Appearance.Accent" @onclick="() => RemoveConnection(context.Id)" IconStart="@(new Icons.Regular.Size16.Delete())">Remove</FluentButton>
+                        <FluentButton Appearance="Appearance.Neutral" @onclick="() => RemoveConnection(context.Id)" IconStart="@(new Icons.Regular.Size16.Delete())">Remove</FluentButton>
                         <FluentButton @onclick="() => IdentifyGroup(context.Bridge.Id, context.GroupId)" IconStart="@(new Icons.Regular.Size16.Lightbulb())">Identify</FluentButton>
                     </FluentStack>
                 </TemplateColumn>
@@ -97,7 +97,10 @@
             <h4>Entertainment Groups for @selectedBridge.Value.Name</h4>
             @if (entertainmentGroups == null)
             {
-                <FluentProgressRing>Loading entertainment groups...</FluentProgressRing>
+                <FluentStack Orientation="Orientation.Horizontal" Gap="12" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentProgressRing />
+                    <FluentLabel Typo="Typography.Body">Loading entertainment groups...</FluentLabel>
+                </FluentStack>
             }
             else if (entertainmentGroups.Any())
             {

@@ -47,7 +47,10 @@
     <h3>Entertainment Groups</h3>
     @if (entertainmentGroups == null)
     {
-        <FluentProgressRing>Loading entertainment groups...</FluentProgressRing>
+        <FluentStack Orientation="Orientation.Horizontal" Gap="12" VerticalAlignment="VerticalAlignment.Center">
+            <FluentProgressRing />
+            <FluentLabel Typo="Typography.Body">Loading entertainment groups...</FluentLabel>
+        </FluentStack>
     }
     else if (entertainmentGroups.Any())
     {
@@ -71,11 +74,14 @@ else if (Id.HasValue)
     </FluentStack>
 }
 
-@if (bridgeConfig == null)
+@if (bridgeConfig == null && errorMessage == null)
 {
-    <FluentProgressRing>Loading bridge config...</FluentProgressRing>
+    <FluentStack Orientation="Orientation.Horizontal" Gap="12" VerticalAlignment="VerticalAlignment.Center" Style="margin-top: 1rem;">
+        <FluentProgressRing />
+        <FluentLabel Typo="Typography.Body">Loading bridge config...</FluentLabel>
+    </FluentStack>
 }
-else
+else if (bridgeConfig != null)
 {
     <h3>Bridge Config</h3>
     <FluentCard Class="page-card" Style="padding: 1rem; margin-bottom: 1rem;">
