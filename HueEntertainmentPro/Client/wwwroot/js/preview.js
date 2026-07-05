@@ -12,6 +12,7 @@ var allowEdit = false;
 var lightContainer = new PIXI.Container();
 var app; // Global reference to Pixi application
 var container; // Global reference to container
+var resizeHandler; // Global reference to the window resize listener
 
 function placeLight(bridgeIp, lightId, x, y, hex, bri, groupId, positionIndex) {
   var bridgeArray = lights[bridgeIp];
@@ -56,6 +57,18 @@ function renderPreviewGrid(allowEditParam) {
   allowEdit = false;
   container = document.getElementById("pixiPreview");
 
+  // Clean up any previous preview session, so lights of a previous connection don't linger
+  if (app) {
+    try { app.destroy(true); } catch (e) { }
+    app = null;
+  }
+  if (resizeHandler) {
+    window.removeEventListener('resize', resizeHandler);
+    resizeHandler = null;
+  }
+  lights = [];
+  lightContainer = new PIXI.Container();
+
   // Create Pixi application with resizeTo option
   app = new PIXI.Application({
     resizeTo: container,
@@ -67,12 +80,13 @@ function renderPreviewGrid(allowEditParam) {
   container.style.height = '100%';
 
   // Handle window resize
-  window.addEventListener('resize', () => {
+  resizeHandler = () => {
     const size = Math.min(container.clientWidth, container.clientHeight);
     cellSize = size / 20;
     app.renderer.resize(size, size); // Maintain square aspect ratio
     updateAllElements();
-  });
+  };
+  window.addEventListener('resize', resizeHandler);
 
   // Initial size calculation
   const size = Math.min(container.clientWidth, container.clientHeight);

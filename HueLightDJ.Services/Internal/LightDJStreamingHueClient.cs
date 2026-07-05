@@ -2,6 +2,7 @@ using HueApi.Entertainment;
 using HueApi.Entertainment.Models;
 using HueLightDJ.Services.Interfaces;
 using HueLightDJ.Services.Interfaces.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,8 @@ namespace HueLightDJ.Services
     private bool _demoMode;
     private readonly IHubService _hub;
     private string _bridgeIp;
+
+    public Guid GroupId { get; set; }
 
     public LightDJStreamingHueClient(IHubService hub, string ip, string appKey, string clientKey, bool demoMode) : base(ip, appKey, clientKey)
     {

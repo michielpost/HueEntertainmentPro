@@ -22,7 +22,7 @@ namespace HueLightDJ.Effects
       if (!color.HasValue)
         color = RGBColor.Random();
 
-      var groupCount = layer.Count / 3;
+      var groupCount = Math.Max(1, layer.Count / 3);
 
       Func<TimeSpan> customWaitMS = () => TimeSpan.FromMilliseconds((waitTime().TotalMilliseconds) / groupCount);
 

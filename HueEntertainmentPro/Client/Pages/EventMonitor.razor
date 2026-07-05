@@ -1,4 +1,5 @@
 @page "/eventmonitor"
+@implements IDisposable
 @using HueEntertainmentPro.Client.Services
 @using HueEntertainmentPro.Shared.Interfaces
 @using HueEntertainmentPro.Shared.Models
@@ -89,32 +90,36 @@ else
         var result = await BridgeDataService.GetBridges();
         bridges = result.AsQueryable();
 
-        EventMonitorService.OnSubscribed += (message) =>
-        {
-            subscribedBridges.Add(message);
-            Console.WriteLine();
-            status = $"Subscribed: {message}";
-            StateHasChanged();
-        };
+        EventMonitorService.OnSubscribed += HandleSubscribed;
+        EventMonitorService.OnUnsubscribed += HandleUnsubscribed;
+        EventMonitorService.OnError += HandleError;
+        EventMonitorService.OnEventReceived += HandleEventReceived;
+    }
 
-        EventMonitorService.OnUnsubscribed += (message) =>
-        {
-            subscribedBridges.Remove(message);
-            status = $"Unsubscribed: {message}";
-            StateHasChanged();
-        };
+    private void HandleSubscribed(Guid message)
+    {
+        subscribedBridges.Add(message);
+        status = $"Subscribed: {message}";
+        StateHasChanged();
+    }
 
-        EventMonitorService.OnError += (message) =>
-        {
-            status = $"Error: {message}";
-            StateHasChanged();
-        };
+    private void HandleUnsubscribed(Guid message)
+    {
+        subscribedBridges.Remove(message);
+        status = $"Unsubscribed: {message}";
+        StateHasChanged();
+    }
 
-        EventMonitorService.OnEventReceived += (eventData) =>
-        {
-            events.Add(eventData);
-            StateHasChanged();
-        };
+    private void HandleError(string message)
+    {
+        status = $"Error: {message}";
+        StateHasChanged();
+    }
+
+    private void HandleEventReceived(EventData eventData)
+    {
+        events.Add(eventData);
+        StateHasChanged();
     }
 
     private async Task Subscribe(Guid bridgeId)
@@ -132,8 +137,12 @@ else
         StateHasChanged();
     }
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        await EventMonitorService.DisposeAsync();
+        //Detach handlers only; EventMonitorService is a singleton and its connection must stay alive
+        EventMonitorService.OnSubscribed -= HandleSubscribed;
+        EventMonitorService.OnUnsubscribed -= HandleUnsubscribed;
+        EventMonitorService.OnError -= HandleError;
+        EventMonitorService.OnEventReceived -= HandleEventReceived;
     }
 }

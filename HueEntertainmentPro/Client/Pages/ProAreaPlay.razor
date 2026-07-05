@@ -1,4 +1,5 @@
 @page "/play/{Id:guid}"
+@implements IDisposable
 @using HueEntertainmentPro.Shared.Interfaces
 @using HueEntertainmentPro.Shared.Models
 @using HueEntertainmentPro.Shared.Models.Requests
@@ -216,6 +217,7 @@ else
     private void HubService_LogMsgEvent(object? sender, string? e)
     {
         lastMsg = e ?? string.Empty;
+        this.InvokeAsync(() => this.StateHasChanged());
     }
 
     private async Task GetStatusAsync()

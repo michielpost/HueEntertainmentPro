@@ -72,12 +72,12 @@ namespace HueLightDJ.Services
     private static int GetMatrixPositionX(HuePosition HuePosition, int matrixSize)
     {
       double pos = ((HuePosition.X + 1) / 2) * matrixSize;
-      return (int)pos;
+      return Math.Clamp((int)pos, 0, matrixSize - 1);
     }
     private static int GetMatrixPositionY(HuePosition HuePosition, int matrixSize)
     {
       double pos = ((1 - (HuePosition.Y + 1) / 2)) * matrixSize;
-      return (int)pos;
+      return Math.Clamp((int)pos, 0, matrixSize - 1);
     }
   }
 }

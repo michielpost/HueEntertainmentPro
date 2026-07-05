@@ -50,6 +50,16 @@ export function renderPreviewGrid() {
 
   const container = document.getElementById('container');
 
+  // Clean up any previous preview session, so lights of a previous connection don't linger
+  if (renderer) {
+    renderer.setAnimationLoop(null);
+    renderer.dispose();
+    renderer.domElement.remove();
+    renderer = null;
+  }
+  lightMap.clear();
+  pendingLightData = null;
+
   //stats = new Stats();
   //container.appendChild( stats.dom );
 
