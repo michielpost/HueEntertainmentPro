@@ -4,9 +4,21 @@
 @inject ThreejsPreviewJsInterop ThreejsPreviewJsInterop
 @inject IHubService HubService
 
-<div id="container"></div>
+<div class="preview-wrapper" id="threejsPreviewWrapper">
+    <div id="container"></div>
+    <button class="fullscreen-btn" type="button" title="Toggle fullscreen" @onclick="ToggleFullscreen">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M1 1h5v2H3v3H1V1zm14 0v5h-2V3h-3V1h5zM1 15v-5h2v3h3v2H1zm14 0h-5v-2h3v-3h2v5z" />
+        </svg>
+    </button>
+</div>
 
 @code{
+    private async Task ToggleFullscreen()
+    {
+        await ThreejsPreviewJsInterop.ToggleFullscreen("threejsPreviewWrapper");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await ThreejsPreviewJsInterop.InitializePreview();

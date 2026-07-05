@@ -10,3 +10,17 @@ export function initPreview() {
 export function showLights(list) {
   preview.scheduleLightUpdate(list);
 }
+
+// Ensure the renderer resizes when entering/leaving fullscreen
+document.addEventListener('fullscreenchange', () => window.dispatchEvent(new Event('resize')));
+
+export function toggleFullscreen(elementId) {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+    return;
+  }
+  const element = document.getElementById(elementId);
+  if (element && element.requestFullscreen) {
+    element.requestFullscreen();
+  }
+}

@@ -4,9 +4,21 @@
 @inject HueJsInterop HueJsInterop
 @inject IHubService HubService
 
-<div id="pixiPreview"></div>
+<div class="preview-wrapper" id="pixiPreviewWrapper">
+    <div id="pixiPreview"></div>
+    <button class="fullscreen-btn" type="button" title="Toggle fullscreen" @onclick="ToggleFullscreen">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M1 1h5v2H3v3H1V1zm14 0v5h-2V3h-3V1h5zM1 15v-5h2v3h3v2H1zm14 0h-5v-2h3v-3h2v5z" />
+        </svg>
+    </button>
+</div>
 
 @code{
+    private async Task ToggleFullscreen()
+    {
+        await HueJsInterop.ToggleFullscreen("pixiPreviewWrapper");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await HueJsInterop.InitializePreview();
