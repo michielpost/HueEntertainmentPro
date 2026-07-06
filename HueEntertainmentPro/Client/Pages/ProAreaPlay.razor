@@ -88,6 +88,18 @@
                 </FluentCard>
             </FluentGridItem>
 
+            <FluentGridItem xs="6" sm="3">
+                <FluentCard Class="page-card" Style="padding: 1.25rem;">
+                    <FluentLabel Typo="Typography.PaneHeader" Style="margin-bottom: 12px; display: block;">Audio Beat Detection</FluentLabel>
+                    <FluentStack Orientation="Orientation.Vertical" Gap="10">
+                        <HueEntertainmentPro.Client.Shared.AudioBeatDetector OnBeat="OnAudioBeat" OnBpmDetected="OnAudioBpmDetected" />
+                        <FluentDivider Style="margin: 8px 0;"></FluentDivider>
+                        <FluentCheckbox Value="@autoSyncBpm" ValueChanged="@((bool value) => autoSyncBpm = value)" Label="Auto-sync BPM to lights"></FluentCheckbox>
+                        <FluentCheckbox Value="@beatToLights" ValueChanged="@((bool value) => beatToLights = value)" Label="Trigger beat effect on every beat"></FluentCheckbox>
+                    </FluentStack>
+                </FluentCard>
+            </FluentGridItem>
+
             @foreach (var effectGroup in effectsVM.BaseEffects)
             {
                 <FluentGridItem xs="6" sm="3">
@@ -238,6 +250,21 @@ else
         await LightDJService.Connect(config);
         statusModel = await LightDJService.GetStatus();
         this.InvokeAsync(() => this.StateHasChanged());
+    }
+
+    private bool autoSyncBpm = true;
+    private bool beatToLights;
+
+    private async Task OnAudioBeat()
+    {
+        if (beatToLights)
+            await LightDJService.Beat();
+    }
+
+    private async Task OnAudioBpmDetected(int bpm)
+    {
+        if (autoSyncBpm)
+            await LightDJService.SetBPM(new IntRequest(bpm));
     }
 
     public async Task Disconnect()

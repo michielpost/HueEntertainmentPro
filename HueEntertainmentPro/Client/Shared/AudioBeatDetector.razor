@@ -1,0 +1,136 @@
+@implements IAsyncDisposable
+@using HueLightDJ.Blazor.Controls
+@inject AudioBeatJsInterop AudioBeatJsInterop
+
+<div id="@ContainerId">
+    <FluentStack Orientation="Orientation.Vertical" Gap="10">
+        @if (!isListening)
+        {
+            <FluentButton Appearance="Appearance.Accent" OnClick="@(() => StartAsync("microphone"))" IconStart="@(new Icons.Regular.Size16.Mic())">Use Microphone</FluentButton>
+            <FluentButton Appearance="Appearance.Accent" OnClick="@(() => StartAsync("system"))" IconStart="@(new Icons.Regular.Size16.Speaker2())">Capture PC Audio</FluentButton>
+            <FluentLabel Typo="Typography.Body" Style="font-size: 12px; opacity: 0.7;">For PC audio: pick a tab or screen and enable "Share audio".</FluentLabel>
+        }
+        else
+        {
+            <div class="beat-row">
+                <span class="beat-dot"></span>
+                <FluentLabel Typo="Typography.Body">@(detectedBpm > 0 ? $"{detectedBpm} BPM" : "Listening for beats...")</FluentLabel>
+            </div>
+            <canvas class="beat-canvas"></canvas>
+            <FluentLabel Typo="Typography.Body" Style="font-size: 12px; opacity: 0.7;">Beats light up in the graph. Drag the dashed line to set how high a peak must be to count as a beat.</FluentLabel>
+            <FluentLabel Typo="Typography.Body">Beats detected: @beatCount</FluentLabel>
+            <FluentLabel Typo="Typography.Body">Sensitivity</FluentLabel>
+            <FluentSlider Value="@sensitivity" ValueChanged="@((double value) => SetSensitivityAsync(value))" Min="1" Max="10" Step="0.5"></FluentSlider>
+            <FluentButton Appearance="Appearance.Neutral" OnClick="StopAsync" IconStart="@(new Icons.Regular.Size16.MicOff())">Stop Listening</FluentButton>
+        }
+        @if (error != null)
+        {
+            <FluentMessageBar Intent="MessageIntent.Warning">@error</FluentMessageBar>
+        }
+    </FluentStack>
+</div>
+
+@code {
+    private const string ContainerId = "audio-beat-detector";
+
+    [Parameter]
+    public EventCallback OnBeat { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnBpmDetected { get; set; }
+
+    private DotNetObjectReference<AudioBeatDetector>? selfRef;
+    private bool isListening;
+    private int detectedBpm;
+    private int beatCount;
+    private double sensitivity = 5;
+    private string? error;
+
+    private async Task StartAsync(string sourceType)
+    {
+        error = null;
+        selfRef ??= DotNetObjectReference.Create(this);
+        try
+        {
+            await AudioBeatJsInterop.Start(selfRef, sourceType, ContainerId);
+            await AudioBeatJsInterop.SetThreshold(ToThreshold(sensitivity));
+            isListening = true;
+            detectedBpm = 0;
+            beatCount = 0;
+        }
+        catch (JSException ex)
+        {
+            error = ToFriendlyError(ex.Message);
+        }
+    }
+
+    private async Task StopAsync()
+    {
+        await AudioBeatJsInterop.Stop();
+        isListening = false;
+        detectedBpm = 0;
+    }
+
+    private async Task SetSensitivityAsync(double value)
+    {
+        sensitivity = value;
+        await AudioBeatJsInterop.SetThreshold(ToThreshold(value));
+    }
+
+    // Slider 1 (least sensitive) .. 10 (most sensitive) maps to an energy
+    // threshold multiplier of 2.45 .. 1.1 used by the JS detector.
+    private static double ToThreshold(double sensitivity) => 1.1 + (10 - sensitivity) * 0.15;
+
+    private static double ToSensitivity(double threshold) => Math.Clamp(10 - (threshold - 1.1) / 0.15, 1, 10);
+
+    private static string ToFriendlyError(string message)
+    {
+        if (message.Contains("NotAllowed", StringComparison.OrdinalIgnoreCase) || message.Contains("Permission denied", StringComparison.OrdinalIgnoreCase))
+            return "Access to the audio source was denied.";
+        if (message.Contains("Share audio", StringComparison.OrdinalIgnoreCase))
+            return "No audio was shared. Select a tab or screen and enable the \"Share audio\" option.";
+        return $"Could not start audio capture: {message}";
+    }
+
+    [JSInvokable]
+    public async Task HandleBeat(int bpm)
+    {
+        beatCount++;
+        if (bpm > 0 && bpm != detectedBpm)
+        {
+            detectedBpm = bpm;
+            await OnBpmDetected.InvokeAsync(bpm);
+        }
+        await OnBeat.InvokeAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public async Task HandleThresholdChanged(double threshold)
+    {
+        // The user dragged the threshold line on the waveform; sync the slider.
+        sensitivity = ToSensitivity(threshold);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public async Task HandleSourceEnded()
+    {
+        isListening = false;
+        detectedBpm = 0;
+        error = "The audio source was stopped.";
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await AudioBeatJsInterop.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+        selfRef?.Dispose();
+    }
+}
