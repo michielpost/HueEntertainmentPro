@@ -7,6 +7,7 @@ namespace HueEntertainmentPro.Client.Services
   public class EventMonitorService : IAsyncDisposable
   {
     private readonly HubConnection _hubConnection;
+    private readonly Task _startTask;
 
     public event Action<Guid>? OnSubscribed;
     public event Action<Guid>? OnUnsubscribed;
@@ -26,12 +27,20 @@ namespace HueEntertainmentPro.Client.Services
       _hubConnection.On<string>(nameof(IEventMonitorClient.Error), error => OnError?.Invoke(error));
       _hubConnection.On<EventData>(nameof(IEventMonitorClient.ReceiveEvent), data => OnEventReceived?.Invoke(data));
 
-      _hubConnection.StartAsync();
+      _startTask = _hubConnection.StartAsync();
     }
 
-    public Task SubscribeAsync(Guid bridgeId) => _hubConnection.SendAsync("Subscribe", bridgeId);
+    public async Task SubscribeAsync(Guid bridgeId)
+    {
+      await _startTask;
+      await _hubConnection.SendAsync("Subscribe", bridgeId);
+    }
 
-    public Task UnsubscribeAsync(Guid bridgeId) => _hubConnection.SendAsync("Unsubscribe", bridgeId);
+    public async Task UnsubscribeAsync(Guid bridgeId)
+    {
+      await _startTask;
+      await _hubConnection.SendAsync("Unsubscribe", bridgeId);
+    }
 
     public ValueTask DisposeAsync() => _hubConnection.DisposeAsync();
   }

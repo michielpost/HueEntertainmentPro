@@ -13,10 +13,12 @@ namespace HueEntertainmentPro.Server.Hubs
     private static readonly ConcurrentDictionary<string, HashSet<Guid>> _subscribers = new ConcurrentDictionary<string, HashSet<Guid>>();
     private static readonly ConcurrentDictionary<Guid, LocalHueApi> _bridgeConnections = new ConcurrentDictionary<Guid, LocalHueApi>();
     private readonly BridgeService _bridgeDatabase;
+    private readonly IHubContext<EventMonitorHub, IEventMonitorClient> _hubContext;
 
-    public EventMonitorHub(BridgeService bridgeDatabase)
+    public EventMonitorHub(BridgeService bridgeDatabase, IHubContext<EventMonitorHub, IEventMonitorClient> hubContext)
     {
       _bridgeDatabase = bridgeDatabase;
+      _hubContext = hubContext;
     }
 
     public async Task Subscribe(Guid bridgeId)
@@ -122,34 +124,43 @@ namespace HueEntertainmentPro.Server.Hubs
     {
       Console.WriteLine($"{DateTimeOffset.UtcNow} | {events.Count} new events");
 
-      foreach (var hueEvent in events)
+      try
       {
-        foreach (var data in hueEvent.Data)
+        foreach (var hueEvent in events)
         {
-          Console.WriteLine($"Bridge IP: {bridgeIp} | Data: {data.Metadata?.Name} / {data.IdV1}");
-          foreach (var jsonData in data.ExtensionData)
+          foreach (var data in hueEvent.Data)
           {
-            Console.WriteLine(jsonData);
-          }
-          Console.WriteLine();
-
-          var eventData = new EventData
-          {
-            CreationTime = hueEvent.CreationTime,
-            SendTime = DateTimeOffset.UtcNow,
-            BridgeIp = bridgeIp,
-            Id = data.Id,
-            Type = data.Type,
-            EventDetails = new EventDetails
+            Console.WriteLine($"Bridge IP: {bridgeIp} | Data: {data.Metadata?.Name} / {data.IdV1}");
+            foreach (var jsonData in data.ExtensionData)
             {
-              Name = data.Metadata?.Name,
-              IdV1 = data.IdV1,
-              ExtensionData = JsonElementConverter.ConvertJsonElementDictionary(data.ExtensionData)
+              Console.WriteLine(jsonData);
             }
-          };
+            Console.WriteLine();
 
-          await Clients.Group(bridgeId.ToString()).ReceiveEvent(eventData);
+            var eventData = new EventData
+            {
+              CreationTime = hueEvent.CreationTime,
+              SendTime = DateTimeOffset.UtcNow,
+              BridgeIp = bridgeIp,
+              Id = data.Id,
+              Type = data.Type,
+              EventDetails = new EventDetails
+              {
+                Name = data.Metadata?.Name,
+                IdV1 = data.IdV1,
+                ExtensionData = JsonElementConverter.ConvertJsonElementDictionary(data.ExtensionData)
+              }
+            };
+
+            //Use the hub context instead of Hub.Clients: this handler runs after the hub instance is disposed
+            await _hubContext.Clients.Group(bridgeId.ToString()).ReceiveEvent(eventData);
+          }
         }
+      }
+      catch (Exception ex)
+      {
+        //async void: an unhandled exception here would crash the process
+        Console.WriteLine($"Error sending events for bridge {bridgeId}: {ex.Message}");
       }
     }
   }

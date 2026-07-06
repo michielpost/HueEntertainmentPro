@@ -152,7 +152,7 @@ namespace HueEntertainmentPro.Services
       {
         return new HueEntertainmentPro.Shared.Models.ProArea
         {
-          Id = demo1Id,
+          Id = demo2Id,
           Name = "Q42 Star Demo",
           Connections = new List<HueEntertainmentPro.Shared.Models.BridgeGroupConnection>
            {

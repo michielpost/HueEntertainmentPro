@@ -39,7 +39,6 @@ namespace HueLightDJ.Services
 
 
 
-    private static Guid _groupId;
     private static CancellationTokenSource _cts = new();
     private bool demoMode;
     private readonly IHubService hub;
@@ -250,6 +249,7 @@ namespace HueLightDJ.Services
       {
         //Initialize streaming client
         var client = new LightDJStreamingHueClient(hub, bridgeConfig.Ip, bridgeConfig.Key, bridgeConfig.EntertainmentKey, demoMode);
+        Guid groupId = bridgeConfig.GroupId.Value;
 
         //Get the entertainment group
         Dictionary<int, HuePosition>? locations = new Dictionary<int, HuePosition>();
@@ -271,7 +271,6 @@ namespace HueLightDJ.Services
             string demoJson = reader.ReadToEnd(); //Make string equal to full file
             locations = JsonSerializer.Deserialize<Dictionary<int, HuePosition>>(demoJson);
           }
-          _groupId = bridgeConfig.GroupId.Value;
         }
         else
         {
@@ -284,7 +283,7 @@ namespace HueLightDJ.Services
           {
             await hub.SendAsync("StatusMsg", $"Using Entertainment Group {group.Id} for bridge {bridgeConfig.Ip}");
             Console.WriteLine($"Using Entertainment Group {group.Id}");
-            _groupId = group.Id;
+            groupId = group.Id;
           }
 
           locations = group.Channels.ToDictionary(x => x.ChannelId, x => x.Position);
@@ -303,13 +302,15 @@ namespace HueLightDJ.Services
         var stream = new StreamingGroup(newLocations);
         stream.IsForSimulator = useSimulator;
 
+        client.GroupId = groupId;
+
         if (!demoMode)
         {
           //Stop streaming to the group, to stop all previous streams
-          await client.LocalHueApi.SetStreamingAsync(_groupId, active: false);
+          await client.LocalHueApi.SetStreamingAsync(groupId, active: false);
 
           //Connect to the streaming group
-          await client.ConnectAsync(_groupId, simulator: useSimulator);
+          await client.ConnectAsync(groupId, simulator: useSimulator);
         }
 
         //Start auto updating this entertainment group
@@ -393,7 +394,7 @@ namespace HueLightDJ.Services
         {
           try
           {
-            await client.LocalHueApi.SetStreamingAsync(_groupId, active: false);
+            await client.LocalHueApi.SetStreamingAsync(client.GroupId, active: false);
             client.Close();
           }
           catch { }

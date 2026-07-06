@@ -164,18 +164,26 @@ namespace HueLightDJ.Services
     public void StartAutoMode()
     {
       autoModeCts?.Cancel();
-      autoModeCts = new CancellationTokenSource();
+      var cts = new CancellationTokenSource();
+      autoModeCts = cts;
 
       Task.Run(async () =>
       {
-        while (!autoModeCts.IsCancellationRequested)
+        while (!cts.IsCancellationRequested)
         {
           StartRandomEffect(AutoModeHasRandomEffects);
 
           var secondsToWait = StreamingSetup.WaitTime.Value.TotalSeconds > 1 ? 18 : 6; //low bpm? play effect longer
-          await Task.Delay(TimeSpan.FromSeconds(secondsToWait));
+          try
+          {
+            await Task.Delay(TimeSpan.FromSeconds(secondsToWait), cts.Token);
+          }
+          catch (TaskCanceledException)
+          {
+            break;
+          }
         }
-      }, autoModeCts.Token);
+      }, cts.Token);
 
     }
 

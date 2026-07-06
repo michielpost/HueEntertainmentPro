@@ -261,23 +261,18 @@ code {
   margin-bottom: 12px;
 }
 
-.link-list-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* spacing between links */
+/* Empty states */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--neutral-foreground-hint);
 }
 
-.nav-link {
-  font-size: 1rem;
-  padding: 8px 12px;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: all 0.2s ease-in-out;
-  color: #605e5c; /* Fluent neutral secondary */
+.empty-state h3 {
+    margin: 0;
+    color: var(--neutral-foreground-rest);
 }
-
-  .nav-link:hover {
-    background-color: #f3f2f1; /* Fluent neutral lighter */
-    color: #000000;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  }

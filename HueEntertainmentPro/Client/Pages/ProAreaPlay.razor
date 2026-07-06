@@ -1,4 +1,5 @@
 @page "/play/{Id:guid}"
+@implements IDisposable
 @using HueEntertainmentPro.Shared.Interfaces
 @using HueEntertainmentPro.Shared.Models
 @using HueEntertainmentPro.Shared.Models.Requests
@@ -61,8 +62,8 @@
                             <FluentButton OnClick="(() => LightDJService.SetBPM(new IntRequest(600)))">Super Quick</FluentButton>
                         </FluentStack>
                         <FluentDivider Style="margin: 8px 0;"></FluentDivider>
-                        <FluentSlider Value="@Brightness" ValueChanged="@((double value) => { Brightness = value; LightDJService.SetBri(new DoubleRequest(value)); })" Min="0" Max="100" Step="1" Label="Brightness"></FluentSlider>
                         <FluentLabel>Brightness: @Brightness%</FluentLabel>
+                        <FluentSlider Value="@Brightness" ValueChanged="@((double value) => { Brightness = value; LightDJService.SetBri(new DoubleRequest(value)); })" Min="0" Max="100" Step="1"></FluentSlider>
                     </FluentStack>
                 </FluentCard>
             </FluentGridItem>
@@ -216,6 +217,7 @@ else
     private void HubService_LogMsgEvent(object? sender, string? e)
     {
         lastMsg = e ?? string.Empty;
+        this.InvokeAsync(() => this.StateHasChanged());
     }
 
     private async Task GetStatusAsync()

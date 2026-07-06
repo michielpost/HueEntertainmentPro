@@ -49,5 +49,11 @@ namespace HueLightDJ.Blazor.Controls
       var module = await moduleTask.Value;
       await module.InvokeVoidAsync("showLights", list);
     }
+
+    public async ValueTask ToggleFullscreen(string elementId)
+    {
+      var module = await moduleTask.Value;
+      await module.InvokeVoidAsync("toggleFullscreen", elementId);
+    }
   }
 }
