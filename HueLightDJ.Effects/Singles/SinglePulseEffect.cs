@@ -29,7 +29,7 @@ namespace HueLightDJ.Effects
           randomPulseEffect.Stop();
         }
         catch { }
-        layer.Effects.Remove(randomPulseEffect);
+        layer.RemoveEffect(randomPulseEffect);
       });
 
       layer.PlaceEffect(randomPulseEffect);

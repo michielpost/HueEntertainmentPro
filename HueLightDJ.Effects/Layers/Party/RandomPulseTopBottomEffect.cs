@@ -38,10 +38,10 @@ namespace HueLightDJ.Effects
       cancellationToken.Register(() =>
       {
         bottomPulseEffect.Stop();
-        layer.Effects.Remove(bottomPulseEffect);
+        layer.RemoveEffect(bottomPulseEffect);
 
         topPulseEffect.Stop();
-        layer.Effects.Remove(topPulseEffect);
+        layer.RemoveEffect(topPulseEffect);
       });
 
     }

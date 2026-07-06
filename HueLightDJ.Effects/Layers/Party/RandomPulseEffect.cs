@@ -24,7 +24,7 @@ namespace HueLightDJ.Effects
       cancellationToken.Register(() =>
       {
         randomPulseEffect.Stop();
-        layer.Effects.Remove(randomPulseEffect);
+        layer.RemoveEffect(randomPulseEffect);
       });
 
       return Task.CompletedTask;

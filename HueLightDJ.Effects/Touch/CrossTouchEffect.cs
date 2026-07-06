@@ -38,8 +38,8 @@ namespace HueLightDJ.Effects.Touch
         hline.Stop();
         vline.Stop();
         await Task.Delay(TimeSpan.FromSeconds(1));
-        layer.Effects.Remove(hline);
-        layer.Effects.Remove(vline);
+        layer.RemoveEffect(hline);
+        layer.RemoveEffect(vline);
       });
     }
   }

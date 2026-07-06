@@ -27,7 +27,7 @@ namespace HueLightDJ.Effects.Layers
       cancellationToken.Register(() =>
       {
         rotatingEffect.Stop();
-        layer.Effects.Remove(rotatingEffect);
+        layer.RemoveEffect(rotatingEffect);
       });
 
       return Task.CompletedTask;
