@@ -1,0 +1,22 @@
+name: Hue Entertainment Pro
+version: "1.0.0"
+slug: huelightdj
+description: >-
+  Web app to control multiple Philips Hue bridges, merge their entertainment
+  areas into one and apply realtime light effects using the Hue Entertainment API.
+url: https://github.com/michielpost/HueLightDJ
+arch:
+  - amd64
+  - aarch64
+init: false
+ingress: true
+ingress_port: 8080
+panel_icon: mdi:lightbulb-multiple
+stage: experimental
+options: {}
+schema: {}
+build:
+  dockerfile: Dockerfile
+  build_from:
+    amd64: mcr.microsoft.com/dotnet/aspnet:10.0
+    aarch64: mcr.microsoft.com/dotnet/aspnet:10.0
