@@ -1,5 +1,5 @@
 # Builds and publishes the Home Assistant add-on image referenced by the
-# "image:" key in addons/huelightdj/config.yaml.
+# "image:" key in huelightdj/config.yaml.
 #
 # Home Assistant pulls this pre-built image (one multi-arch manifest covering
 # linux/amd64 and linux/arm64), so users never compile .NET on their own
@@ -12,7 +12,7 @@ on:
     branches:
       - master
     paths:
-      - "addons/**"
+      - "huelightdj/**"
       - "HueEntertainmentPro*/**"
       - "HueLightDJ*/**"
       - ".github/workflows/addon.yml"
@@ -37,7 +37,7 @@ jobs:
       - name: Read add-on version from config.yaml
         id: addon
         run: |
-          VERSION=$(grep -E '^version:' addons/huelightdj/config.yaml | sed -E 's/^version: *"?([^"]+)"?$/\1/')
+          VERSION=$(grep -E '^version:' huelightdj/config.yaml | sed -E 's/^version: *"?([^"]+)"?$/\1/')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
@@ -57,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./addons/huelightdj/Dockerfile
+          file: ./huelightdj/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |

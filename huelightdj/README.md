@@ -43,7 +43,7 @@ The image is built from the **repository root** (the add-on folder cannot see
 the app source). To build locally:
 
 ```sh
-docker build -f addons/huelightdj/Dockerfile .
+docker build -f huelightdj/Dockerfile .
 ```
 
 Releases are published to `ghcr.io/michielpost/huelightdj-addon` by the

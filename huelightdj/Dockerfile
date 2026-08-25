@@ -1,7 +1,7 @@
 # Home Assistant add-on image for Hue Entertainment Pro.
 #
 # IMPORTANT: the Docker build context must be the *repository root*:
-#   docker build -f addons/huelightdj/Dockerfile .
+#   docker build -f huelightdj/Dockerfile .
 #
 # Home Assistant never builds this Dockerfile itself: the Supervisor uses the
 # add-on folder as build context (which cannot see the app source), so
@@ -40,7 +40,7 @@ LABEL org.opencontainers.image.title="Hue Entertainment Pro" \
 
 WORKDIR /app
 COPY --from=build /app/publish .
-COPY addons/huelightdj/run.sh /run.sh
+COPY huelightdj/run.sh /run.sh
 RUN chmod a+x /run.sh
 
 EXPOSE 8080
