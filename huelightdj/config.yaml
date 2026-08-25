@@ -15,8 +15,10 @@ panel_icon: mdi:lightbulb-multiple
 stage: experimental
 # Pre-built multi-arch image (linux/amd64 + linux/arm64), published by
 # .github/workflows/addon.yml. Users pull this image instead of compiling
-# .NET on their Home Assistant machine. Keep the tag in sync with "version".
-image: ghcr.io/michielpost/huelightdj-addon:1.0.0
+# .NET on their Home Assistant machine.
+# NOTE: no tag here - Supervisor rejects tags in "image" and pulls
+# {image}:{version}, so the pushed image tag must match "version" above.
+image: ghcr.io/michielpost/huelightdj-addon
 # Restart the add-on automatically if the web UI stops responding.
 watchdog: http://[HOST]:8080/
 options: {}
