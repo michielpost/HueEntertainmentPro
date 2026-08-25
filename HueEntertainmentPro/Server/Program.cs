@@ -83,7 +83,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     {
         System.Net.IPNetwork.Parse("10.0.0.0/8"),
         System.Net.IPNetwork.Parse("172.16.0.0/12"),
-        System.Net.IPNetwork.Parse("192.168.0.0/16")
+        System.Net.IPNetwork.Parse("192.168.0.0/16"),
+        System.Net.IPNetwork.Parse("fc00::/7") // IPv6 unique-local (Docker networks with IPv6)
     }
 });
 
@@ -113,6 +114,44 @@ app.MapHub<EventMonitorHub>("/eventmonitorhub");
 
 app.MapRazorPages();
 app.MapControllers();
-app.MapFallbackToFile("{**path}", "index.html");
+
+// Serve the Blazor index.html with a <base href> matching the path the app is
+// reached on. Home Assistant ingress serves the app under
+// /api/hassio_ingress/<token>/ (sent via the X-Ingress-Path header) while the
+// proxy strips that prefix before forwarding. Rewriting the base href keeps all
+// relative asset and API URLs working both behind ingress and on direct access.
+// The {**path} pattern (without a nonfile constraint) is required because the
+// app has routes containing dots, e.g. /bridge/{*Ip} with an IP address.
+app.MapFallback("{**path}", async context =>
+{
+    var indexFile = context.RequestServices
+        .GetRequiredService<IWebHostEnvironment>()
+        .WebRootFileProvider.GetFileInfo("index.html");
+
+    if (!indexFile.Exists)
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return;
+    }
+
+    string html;
+    await using (var stream = indexFile.CreateReadStream())
+    using (var reader = new StreamReader(stream))
+    {
+        html = await reader.ReadToEndAsync();
+    }
+
+    string? ingressPath = context.Request.Headers["X-Ingress-Path"];
+    if (!string.IsNullOrEmpty(ingressPath) && ingressPath.StartsWith('/'))
+    {
+        var baseHref = System.Net.WebUtility.HtmlEncode(ingressPath.TrimEnd('/') + "/");
+        html = html.Replace("<base href=\"/\" />", $"<base href=\"{baseHref}\" />");
+    }
+
+    // Never cache: the ingress token (and thus the base href) can change.
+    context.Response.ContentType = "text/html; charset=utf-8";
+    context.Response.Headers.CacheControl = "no-cache";
+    await context.Response.WriteAsync(html);
+});
 
 app.Run();

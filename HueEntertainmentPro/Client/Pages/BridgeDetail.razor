@@ -89,7 +89,7 @@ else if (bridgeConfig != null)
             @if (Id.HasValue)
             {
                 <FluentLabel>
-                    Explore more bridge details on the <a href="/resource-explorer/@Id">Resource Explorer</a>.
+                    Explore more bridge details on the <a href="resource-explorer/@Id">Resource Explorer</a>.
                 </FluentLabel>
             }
             <FluentLabel>
@@ -245,7 +245,7 @@ else if (bridgeConfig != null)
             {
                 await BridgeService.DeleteBridge(new GuidRequest { Id = bridge.Id });
                 ToastService.ShowSuccess("Bridge deleted successfully.");
-                Navigation.NavigateTo("/bridges");
+                Navigation.NavigateTo("bridges");
             }
             catch (Exception ex)
             {

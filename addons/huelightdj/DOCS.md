@@ -49,8 +49,9 @@ empty; all settings are managed through the web interface.
 - **"Can't connect to bridge"** — make sure the add-on host and the Hue bridge
   are on the same network/VLAN, and that multicast traffic isn't blocked by the
   router. You can also add the bridge by its IP address.
-- **Slow install** — first build compiles the .NET application; subsequent
-  installs/updates reuse the Docker build cache.
+- **Slow or failing install** — the add-on pulls a pre-built image from
+  `ghcr.io`. Check your network connection and that GitHub's container
+  registry is reachable from the Home Assistant host.
 - **Direct LAN access** — by design no host port is exposed (avoids conflicts).
   If you need direct `host:port` access in addition to the sidebar, add a
   `ports` mapping (`8080/tcp: <a free host port>`) and set `ingress: false` in

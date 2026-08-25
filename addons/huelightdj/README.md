@@ -11,8 +11,8 @@ apply realtime light effects to a large number of lights at once.
    **Settings → Add-ons → Add-on Store → ⋮ (top right) → Repositories** and enter
    the URL of this repository.
 2. Find **Hue Entertainment Pro** in the store and click **Install**.
-3. The add-on builds itself from source (a .NET 10 build). This can take a few
-   minutes on the first install.
+3. Home Assistant downloads a pre-built multi-arch image (`amd64` and
+   `aarch64`), so installation takes seconds — no compilation on your device.
 4. Start the add-on.
 5. Open the interface from the **Home Assistant sidebar** — an entry named
    **Hue Entertainment Pro** is added automatically.
@@ -36,3 +36,17 @@ your bridges and settings survive add-on restarts and updates.
   exposed, so there is nothing to conflict with other services).
 - The app listens on port `8080` **inside the container** only; it is not
   published to the host.
+
+## For developers
+
+The image is built from the **repository root** (the add-on folder cannot see
+the app source). To build locally:
+
+```sh
+docker build -f addons/huelightdj/Dockerfile .
+```
+
+Releases are published to `ghcr.io/michielpost/huelightdj-addon` by the
+`addon.yml` GitHub Actions workflow, tagged with the `version` from
+`config.yaml`. Bump the version there (and keep the `image` tag in sync) to
+ship an update.

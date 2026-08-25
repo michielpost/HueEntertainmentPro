@@ -13,10 +13,11 @@ ingress: true
 ingress_port: 8080
 panel_icon: mdi:lightbulb-multiple
 stage: experimental
+# Pre-built multi-arch image (linux/amd64 + linux/arm64), published by
+# .github/workflows/addon.yml. Users pull this image instead of compiling
+# .NET on their Home Assistant machine. Keep the tag in sync with "version".
+image: ghcr.io/michielpost/huelightdj-addon:1.0.0
+# Restart the add-on automatically if the web UI stops responding.
+watchdog: http://[HOST]:8080/
 options: {}
 schema: {}
-build:
-  dockerfile: Dockerfile
-  build_from:
-    amd64: mcr.microsoft.com/dotnet/aspnet:10.0
-    aarch64: mcr.microsoft.com/dotnet/aspnet:10.0

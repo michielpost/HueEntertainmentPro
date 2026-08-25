@@ -1,7 +1,18 @@
-# Build stage: compile the .NET server.
-# The build context for a Home Assistant add-on is the repository root, so the
-# COPY paths below are relative to the repository root.
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# Home Assistant add-on image for Hue Entertainment Pro.
+#
+# IMPORTANT: the Docker build context must be the *repository root*:
+#   docker build -f addons/huelightdj/Dockerfile .
+#
+# Home Assistant never builds this Dockerfile itself: the Supervisor uses the
+# add-on folder as build context (which cannot see the app source), so
+# config.yaml references the pre-built multi-arch image published by
+# .github/workflows/addon.yml instead ("image:" key).
+
+# Build stage. Pinned to the build platform: "dotnet publish" below produces
+# portable, architecture-neutral IL (UseAppHost=false, no RID), so the SDK
+# never needs to run under QEMU emulation. Only the final base image is
+# architecture-specific.
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY ["HueEntertainmentPro/Server/HueEntertainmentPro.Server.csproj", "HueEntertainmentPro/Server/"]
@@ -18,12 +29,14 @@ COPY . .
 WORKDIR "/src/HueEntertainmentPro/Server"
 RUN dotnet publish "./HueEntertainmentPro.Server.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Runtime stage.
-# Home Assistant injects the correct base image through the BUILD_FROM build
-# argument (configured per-arch in config.yaml). A sensible default is kept so
-# that manual docker builds work out of the box.
-ARG BUILD_FROM=mcr.microsoft.com/dotnet/aspnet:10.0
-FROM $BUILD_FROM
+# Runtime stage. Not pinned to a platform: Docker Buildx automatically picks
+# the variant matching the target platform (linux/amd64 or linux/arm64).
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+
+LABEL org.opencontainers.image.title="Hue Entertainment Pro" \
+      org.opencontainers.image.description="Merge multiple Philips Hue entertainment areas and apply realtime light effects" \
+      org.opencontainers.image.source="https://github.com/michielpost/HueLightDJ" \
+      org.opencontainers.image.licenses="MIT"
 
 WORKDIR /app
 COPY --from=build /app/publish .

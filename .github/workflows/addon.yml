@@ -1,0 +1,67 @@
+# Builds and publishes the Home Assistant add-on image referenced by the
+# "image:" key in addons/huelightdj/config.yaml.
+#
+# Home Assistant pulls this pre-built image (one multi-arch manifest covering
+# linux/amd64 and linux/arm64), so users never compile .NET on their own
+# machine. The image tag is read from "version:" in the add-on's config.yaml;
+# bump the version there to publish a new add-on release.
+name: Home Assistant add-on image
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "addons/**"
+      - "HueEntertainmentPro*/**"
+      - "HueLightDJ*/**"
+      - ".github/workflows/addon.yml"
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/huelightdj-addon
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read add-on version from config.yaml
+        id: addon
+        run: |
+          VERSION=$(grep -E '^version:' addons/huelightdj/config.yaml | sed -E 's/^version: *"?([^"]+)"?$/\1/')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push add-on image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./addons/huelightdj/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ steps.addon.outputs.version }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

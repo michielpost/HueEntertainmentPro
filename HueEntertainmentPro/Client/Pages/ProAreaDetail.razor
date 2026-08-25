@@ -73,7 +73,7 @@
     {
         <FluentMessageBar Intent="MessageIntent.Warning" Style="margin-bottom: 16px;">
             All bridges are already connected to this area. Add more bridges to add more entertainment groups.
-            <FluentNavLink href="/bridges">Go to Bridges</FluentNavLink>
+            <FluentNavLink href="bridges">Go to Bridges</FluentNavLink>
         </FluentMessageBar>
     }
 
@@ -232,7 +232,7 @@ else
 			{
 				await ProAreaDataService.DeleteProArea(new GuidRequest { Id = proArea.Id });
 				ToastService.ShowSuccess("Area deleted successfully.");
-				Navigation.NavigateTo("/");
+				Navigation.NavigateTo("");
 			}
 			catch (Exception ex)
 			{

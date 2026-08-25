@@ -28,7 +28,7 @@ else if (!bridges.Any())
             <FluentIcon Value="@(new Icons.Regular.Size48.Alert())" Color="Color.Disabled" />
             <h3>No bridges yet</h3>
             <FluentLabel Typo="Typography.Body">Add a Hue Bridge first, then come back here to monitor its events.</FluentLabel>
-            <FluentButton Appearance="Appearance.Accent" @onclick="@(() => Navigation.NavigateTo("/bridges"))" IconStart="@(new Icons.Regular.Size16.Add())">Go to Bridges</FluentButton>
+            <FluentButton Appearance="Appearance.Accent" @onclick="@(() => Navigation.NavigateTo("bridges"))" IconStart="@(new Icons.Regular.Size16.Add())">Go to Bridges</FluentButton>
         </div>
     </FluentCard>
 }
