@@ -29,6 +29,7 @@ builder.Services.AddHttpClient("ServerAPI",
   {
     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
   })
+  .AddHttpMessageHandler(() => new IngressBasePathHandler(new Uri(builder.HostEnvironment.BaseAddress).AbsolutePath))
   .AddHttpMessageHandler(() => new GrpcWebHandler(GrpcWebMode.GrpcWeb));
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
