@@ -21,6 +21,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HueEntertainmentPro.Shared"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevTools", "DevTools", "{8BFDF5DC-D6B1-014C-9270-741D415F2FA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IngressProxy", "HueEntertainmentPro\DevTools\IngressProxy\IngressProxy.csproj", "{46D52068-4494-4E27-B8CD-8AA25D3D1798}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HueEntertainmentPro.AppHost", "HueEntertainmentPro.AppHost\HueEntertainmentPro.AppHost.csproj", "{8E7F709E-1CF7-477B-8FA6-7C9492D57910}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,9 +69,21 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46D52068-4494-4E27-B8CD-8AA25D3D1798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46D52068-4494-4E27-B8CD-8AA25D3D1798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46D52068-4494-4E27-B8CD-8AA25D3D1798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46D52068-4494-4E27-B8CD-8AA25D3D1798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E7F709E-1CF7-477B-8FA6-7C9492D57910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E7F709E-1CF7-477B-8FA6-7C9492D57910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E7F709E-1CF7-477B-8FA6-7C9492D57910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E7F709E-1CF7-477B-8FA6-7C9492D57910}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{46D52068-4494-4E27-B8CD-8AA25D3D1798} = {8BFDF5DC-D6B1-014C-9270-741D415F2FA9}
+		{8E7F709E-1CF7-477B-8FA6-7C9492D57910} = {8BFDF5DC-D6B1-014C-9270-741D415F2FA9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BEC3BD8-7707-46D9-893F-32AF2FB682AF}
