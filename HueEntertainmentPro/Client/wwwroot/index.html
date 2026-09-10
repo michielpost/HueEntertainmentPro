@@ -5,7 +5,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HueEntertainmentPro</title>
-  <base href="/" />
+  <!-- Resolve all relative URLs (assets, gRPC, SignalR, API) against the URL this
+       page was loaded from, so the app also works when hosted under a dynamic
+       path prefix (e.g. Home Assistant ingress: /app/<addon-slug>/). -->
+  <script>
+    (function () {
+      var path = window.location.pathname;
+      path += path.endsWith('/') ? '' : '/';
+
+      var base = document.querySelector('base');
+      if (!base) {
+        base = document.createElement('base');
+        document.head.appendChild(base);
+      }
+      base.href = window.location.origin + path;
+    })();
+  </script>
   <link href="_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/app.css" />
   <link rel="stylesheet" href="HueEntertainmentPro.Client.styles.css" />
