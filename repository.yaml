@@ -1,6 +1,6 @@
 # Home Assistant add-on repository descriptor.
 # Required by the Home Assistant Supervisor to recognize this Git repository
 # as an add-on repository (Settings -> Add-ons -> Add-on Store -> Repositories).
-name: HueLightDJ add-ons
+name: Hue Entertainment Pro add-ons
 url: https://github.com/michielpost/HueLightDJ
 maintainer: michielpost
