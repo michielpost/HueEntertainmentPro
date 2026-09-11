@@ -31,12 +31,12 @@ namespace HueEntertainmentPro.Client.Services
     public string CreateResourceLink(Guid id, string? rtype, Guid? rid = null)
     {
       if (rtype == null)
-        return $"/resource-explorer/{id}";
+        return $"resource-explorer/{id}";
 
       if (rid == null)
-        return $"/resource-explorer/{id}/{rtype}";
+        return $"resource-explorer/{id}/{rtype}";
 
-      return $"/resource-explorer/{id}/{rtype}/{rid}";
+      return $"resource-explorer/{id}/{rtype}/{rid}";
     }
   }
 }

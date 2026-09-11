@@ -37,12 +37,12 @@ else
     <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
         <FluentDataGrid Id="bridgegrid" Items="@bridges" GridTemplateColumns="2fr 2fr 2fr auto" TGridItem="Bridge" RowSize="DataGridRowSize.Medium">
             <TemplateColumn Title="Name" Sortable="true" Align="Align.Start">
-                <NavLink href="@($"/bridge/{context.Id}")">@context.Name</NavLink>
+                <NavLink href="@($"bridge/{context.Id}")">@context.Name</NavLink>
             </TemplateColumn>
             <PropertyColumn Title="IP" Property="@(b => b.Ip)" Sortable="true" Align="Align.Start" />
             <PropertyColumn Title="Id" Property="@(b => b.Id)" Sortable="true" Align="Align.Start" />
             <TemplateColumn Title="" Align="Align.End">
-                <NavLink href="@($"/bridge/{context.Id}")" title="Edit">
+                <NavLink href="@($"bridge/{context.Id}")" title="Edit">
                     <FluentIcon Value="@(new Icons.Regular.Size16.Edit())" />
                 </NavLink>
             </TemplateColumn>
