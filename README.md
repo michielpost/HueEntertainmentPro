@@ -48,7 +48,7 @@ DEMO:  [https://huelightdj.azurewebsites.net/](https://huelightdj.azurewebsites.
 ![3D preview](screenshots/3d_preview.gif)
 
 ## Tech
-- ASP.Net Core 9.0 backend
+- ASP.Net Core 10.0 backend
 - SignalR for realtime communication from server to client
 - gRPC for client to server communication
 - [HueApi](https://github.com/michielpost/Q42.HueApi) for communicating with the Hue Bridge
@@ -58,9 +58,34 @@ DEMO:  [https://huelightdj.azurewebsites.net/](https://huelightdj.azurewebsites.
 - SQLite for data storage
 
 ## **Build and Install Instructions**
-- Make sure to have [.Net 9.0](https://dotnet.microsoft.com/download) installed to build this project (`dotnet build`)
+- Make sure to have [.Net 10.0](https://dotnet.microsoft.com/download) installed to build this project (`dotnet build`)
 - Run the HueEntertainmentPro.Server project(`cd HueEntertainmentPro\Server && dotnet run`) 
 - Follow the instructions to link your bridge or use the DEMO setup
+
+## Home Assistant add-on
+
+[![Home Assistant add-on image](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/addon.yml/badge.svg)](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/addon.yml)
+
+Hue Entertainment Pro is available as a **Home Assistant add-on**. It runs the web app
+inside Home Assistant and serves the interface through the Home Assistant ingress proxy,
+so no extra port has to be opened and the UI shows up directly in the sidebar.
+
+### Requirements
+
+- Home Assistant OS or Home Assistant Supervised (add-ons are not available on Home Assistant Container or Core).
+- A 64-bit system: `amd64` or `aarch64`. 32-bit ARM and i386 are not supported.
+
+### Install
+
+1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**.
+2. Click the **⋮** menu in the top right corner and choose **Repositories**.
+3. Paste the URL of this repository, `https://github.com/michielpost/HueEntertainmentPro`, and click **Add**.
+4. Close the dialog, search the store for **Hue Entertainment Pro** and click **Install**.
+   A pre-built multi-arch image (`amd64`/`aarch64`) is pulled from GitHub Container Registry, so nothing is compiled on your device.
+5. Click **Start**.
+6. Open the app from the **Home Assistant sidebar** — a **Hue Entertainment Pro** panel is added automatically through ingress.
+
+More details, including troubleshooting, can be found in the [add-on documentation](huelightdj/DOCS.md).
 
 ## Docker
 https://hub.docker.com/r/michielpost/huelightdj/
@@ -123,7 +148,6 @@ dotnet ef --startup-project HueEntertainmentPro\Server\HueEntertainmentPro.Serve
 - Effect Composer, try out new effects by selecting a group, IteratorMode and effect
 - More build in effects
 - Support for a hardware controller using WebMidi
-- Listen to sound input
 
 
 
