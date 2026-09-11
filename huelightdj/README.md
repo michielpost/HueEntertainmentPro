@@ -1,6 +1,6 @@
 # Hue Entertainment Pro (Home Assistant add-on)
 
-This add-on runs [Hue Entertainment Pro](https://github.com/michielpost/HueLightDJ)
+This add-on runs [Hue Entertainment Pro](https://github.com/michielpost/HueEntertainmentPro)
 inside Home Assistant. It is a web app that connects to multiple Philips Hue
 bridges over your local network and merges their entertainment areas so you can
 apply realtime light effects to a large number of lights at once.

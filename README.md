@@ -1,7 +1,7 @@
 # Hue Entertainment Pro
 Old name: Hue Light DJ
 
-[![Build .NET](https://github.com/michielpost/HueLightDJ/actions/workflows/build.yml/badge.svg)](https://github.com/michielpost/HueLightDJ/actions/workflows/build.yml)
+[![Build .NET](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/build.yml/badge.svg)](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/build.yml)
 
 ## What is it?
 This web app can connect to multiple Philips Hue Bridges over the local network. It uses the Hue Entertainment API to update the lights almost instantly.

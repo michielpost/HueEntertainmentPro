@@ -35,7 +35,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
 LABEL org.opencontainers.image.title="Hue Entertainment Pro" \
       org.opencontainers.image.description="Merge multiple Philips Hue entertainment areas and apply realtime light effects" \
-      org.opencontainers.image.source="https://github.com/michielpost/HueLightDJ" \
+      org.opencontainers.image.source="https://github.com/michielpost/HueEntertainmentPro" \
       org.opencontainers.image.licenses="MIT"
 
 WORKDIR /app
