@@ -2,7 +2,7 @@
 set -e
 
 # Home Assistant automatically mounts a persistent volume at /data for every
-# add-on. Point the SQLite database at it so bridge/light data survives restarts.
+# app. Point the SQLite database at it so bridge/light data survives restarts.
 mkdir -p /data
 
 export ConnectionStrings__DefaultConnection="Data Source=/data/HueEntertainmentPro.db;Cache=Shared"

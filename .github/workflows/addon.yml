@@ -1,11 +1,11 @@
-# Builds and publishes the Home Assistant add-on image referenced by the
+# Builds and publishes the Home Assistant app image referenced by the
 # "image:" key in huelightdj/config.yaml.
 #
 # Home Assistant pulls this pre-built image (one multi-arch manifest covering
 # linux/amd64 and linux/arm64), so users never compile .NET on their own
-# machine. The image tag is read from "version:" in the add-on's config.yaml;
-# bump the version there to publish a new add-on release.
-name: Home Assistant add-on image
+# machine. The image tag is read from "version:" in the app's config.yaml;
+# bump the version there to publish a new app release.
+name: Home Assistant app image
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Read add-on version from config.yaml
+      - name: Read app version from config.yaml
         id: addon
         run: |
           VERSION=$(grep -E '^version:' huelightdj/config.yaml | sed -E 's/^version: *"?([^"]+)"?$/\1/')
@@ -53,7 +53,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push add-on image
+      - name: Build and push app image
         uses: docker/build-push-action@v6
         with:
           context: .

@@ -1,5 +1,5 @@
 name: Hue Entertainment Pro
-version: "1.0.3"
+version: "1.0.4"
 slug: huelightdj
 description: >-
   Web app to control multiple Philips Hue bridges, merge their entertainment
@@ -19,7 +19,7 @@ stage: experimental
 # NOTE: no tag here - Supervisor rejects tags in "image" and pulls
 # {image}:{version}, so the pushed image tag must match "version" above.
 image: ghcr.io/michielpost/huelightdj-addon
-# Restart the add-on automatically if the web UI stops responding.
+# Restart the app automatically if the web UI stops responding.
 watchdog: http://[HOST]:8080/
 options: {}
 schema: {}

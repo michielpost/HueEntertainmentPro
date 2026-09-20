@@ -1,6 +1,9 @@
 # Hue Entertainment Pro
 
-This add-on runs **Hue Entertainment Pro**, a web app that connects to multiple
+> Home Assistant renamed **add-ons** to **apps**. On older Home Assistant versions
+> this feature is still called *Add-ons* and lives under **Settings → Add-ons**.
+
+This app runs **Hue Entertainment Pro**, a web app that connects to multiple
 Philips Hue bridges over your local network. It uses the Hue Entertainment API to
 update the lights almost instantly, and lets you merge several entertainment areas
 into one so you can drive large setups (20+ lights) as a single group.
@@ -12,11 +15,11 @@ into one so you can drive large setups (20+ lights) as a single group.
 - Built-in effects, BPM input, 2D and 3D previews
 - Random mode and Auto (party) mode
 - DEMO mode to try it without a Hue bridge
-- SQLite storage (persisted to the add-on `/data` volume)
+- SQLite storage (persisted to the app `/data` volume)
 
 ## Setup
 
-1. Install and start the add-on.
+1. Install and start the app.
 2. Open it from the **Home Assistant sidebar** (the **Hue Entertainment Pro**
    entry). It is served via the Home Assistant ingress proxy, so no host port
    needs to be opened.
@@ -26,9 +29,9 @@ into one so you can drive large setups (20+ lights) as a single group.
 
 ## Networking
 
-The add-on follows Home Assistant best practices:
+The app follows Home Assistant best practices:
 
-- It runs on the default add-on network (not `host_network`).
+- It runs on the default app network (not `host_network`).
 - The web UI is exposed through **Home Assistant ingress**, which routes traffic
   through Home Assistant's authenticated HTTPS reverse proxy. No `ports` are
   published, so there is no fixed host port that can conflict with other
@@ -38,7 +41,7 @@ The add-on follows Home Assistant best practices:
 
 ## Configuration
 
-This add-on requires no configuration options. The `options`/`schema` are left
+This app requires no configuration options. The `options`/`schema` are left
 empty; all settings are managed through the web interface.
 
 - **Connection strings / data**: the SQLite database is stored automatically in
@@ -46,10 +49,10 @@ empty; all settings are managed through the web interface.
 
 ## Troubleshooting
 
-- **"Can't connect to bridge"** — make sure the add-on host and the Hue bridge
+- **"Can't connect to bridge"** — make sure the app host and the Hue bridge
   are on the same network/VLAN, and that multicast traffic isn't blocked by the
   router. You can also add the bridge by its IP address.
-- **Slow or failing install** — the add-on pulls a pre-built image from
+- **Slow or failing install** — the app pulls a pre-built image from
   `ghcr.io`. Check your network connection and that GitHub's container
   registry is reachable from the Home Assistant host.
 - **Direct LAN access** — by design no host port is exposed (avoids conflicts).

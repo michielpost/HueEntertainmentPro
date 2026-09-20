@@ -1,10 +1,10 @@
-# Home Assistant add-on image for Hue Entertainment Pro.
+# Home Assistant app image for Hue Entertainment Pro.
 #
 # IMPORTANT: the Docker build context must be the *repository root*:
 #   docker build -f huelightdj/Dockerfile .
 #
 # Home Assistant never builds this Dockerfile itself: the Supervisor uses the
-# add-on folder as build context (which cannot see the app source), so
+# app folder as build context (which cannot see the app source), so
 # config.yaml references the pre-built multi-arch image published by
 # .github/workflows/addon.yml instead ("image:" key).
 

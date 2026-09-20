@@ -62,30 +62,31 @@ DEMO:  [https://huelightdj.azurewebsites.net/](https://huelightdj.azurewebsites.
 - Run the HueEntertainmentPro.Server project(`cd HueEntertainmentPro\Server && dotnet run`) 
 - Follow the instructions to link your bridge or use the DEMO setup
 
-## Home Assistant add-on
+## Home Assistant app
 
-[![Home Assistant add-on image](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/addon.yml/badge.svg)](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/addon.yml)
+[![Home Assistant app image](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/addon.yml/badge.svg)](https://github.com/michielpost/HueEntertainmentPro/actions/workflows/addon.yml)
 
-Hue Entertainment Pro is available as a **Home Assistant add-on**. It runs the web app
+Hue Entertainment Pro is available as a **Home Assistant app**. It runs the web app
 inside Home Assistant and serves the interface through the Home Assistant ingress proxy,
 so no extra port has to be opened and the UI shows up directly in the sidebar.
 
 ### Requirements
 
-- Home Assistant OS or Home Assistant Supervised (add-ons are not available on Home Assistant Container or Core).
+- Home Assistant OS or Home Assistant Supervised (apps are not available on Home Assistant Container or Core).
 - A 64-bit system: `amd64` or `aarch64`. 32-bit ARM and i386 are not supported.
 
 ### Install
 
-1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**.
-2. Click the **⋮** menu in the top right corner and choose **Repositories**.
-3. Paste the URL of this repository, `https://github.com/michielpost/HueEntertainmentPro`, and click **Add**.
-4. Close the dialog, search the store for **Hue Entertainment Pro** and click **Install**.
+1. In Home Assistant, go to **Settings → Apps** and select **Install app**. This opens the app store.
+2. In the top-right corner, select the **⋮** menu and choose **Repositories**.
+3. Paste the URL of this repository, `https://github.com/michielpost/HueEntertainmentPro`, and select **Add**.
+   If the repository does not show up, refresh the browser.
+4. Close the dialog, find **Hue Entertainment Pro** in the store and select it, then select **Install**.
    A pre-built multi-arch image (`amd64`/`aarch64`) is pulled from GitHub Container Registry, so nothing is compiled on your device.
-5. Click **Start**.
-6. Open the app from the **Home Assistant sidebar** — a **Hue Entertainment Pro** panel is added automatically through ingress.
+5. Select **Start**.
+6. Open it from the **Home Assistant sidebar** — a **Hue Entertainment Pro** panel is added automatically through ingress.
 
-More details, including troubleshooting, can be found in the [add-on documentation](huelightdj/DOCS.md).
+More details, including troubleshooting, can be found in the [app documentation](huelightdj/DOCS.md).
 
 ## Docker
 https://hub.docker.com/r/michielpost/huelightdj/

@@ -1,6 +1,7 @@
-# Home Assistant add-on repository descriptor.
+# Home Assistant app repository descriptor.
 # Required by the Home Assistant Supervisor to recognize this Git repository
-# as an add-on repository (Settings -> Add-ons -> Add-on Store -> Repositories).
-name: Hue Entertainment Pro add-ons
+# as an app repository (Settings -> Apps -> Install app -> ⋮ -> Repositories).
+# On older Home Assistant versions this is called "add-ons".
+name: Hue Entertainment Pro apps
 url: https://github.com/michielpost/HueEntertainmentPro
 maintainer: michielpost
