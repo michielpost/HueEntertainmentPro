@@ -1,34 +1,35 @@
 @page "/settings"
+@inject IThemeService ThemeService
 
 <PageTitle>Settings</PageTitle>
 
 <h1>Settings</h1>
 
-<FluentDesignTheme @bind-Mode="@Mode"
-                   @bind-OfficeColor="@OfficeColor"
-                   OnLoaded="@OnLoaded"
-                   OnLuminanceChanged="@OnLuminanceChanged"
-                   StorageName="theme" />
-
 <FluentCard Class="page-card" Style="padding: 1.5rem; max-width: 500px;">
-    <FluentStack Orientation="Orientation.Vertical" Gap="16">
-        <FluentLabel Typo="Typography.PaneHeader">Appearance</FluentLabel>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px">
+        <FluentText As="TextTag.H4" Size="TextSize.Size400" Weight="TextWeight.Semibold">Appearance</FluentText>
         <FluentSelect Label="Theme"
                       Width="250px"
-                      Items="@(Enum.GetValues<DesignThemeModes>())"
-                      @bind-SelectedOption="@Mode" />
+                      Items="@(Enum.GetValues<ThemeMode>())"
+                      TOption="ThemeMode"
+                      TValue="ThemeMode"
+                      Value="@Mode"
+                      ValueChanged="@OnModeChangedAsync" />
     </FluentStack>
 </FluentCard>
 
 @code {
-    public DesignThemeModes Mode { get; set; }
-    public OfficeColor? OfficeColor { get; set; }
+    public ThemeMode Mode { get; set; } = ThemeMode.System;
 
-    void OnLoaded(LoadedEventArgs e)
+    protected override async Task OnInitializedAsync()
     {
+        var settings = await ThemeService.GetThemeSettingsAsync();
+        Mode = settings?.Mode ?? ThemeMode.System;
     }
 
-    void OnLuminanceChanged(LuminanceChangedEventArgs e)
+    private async Task OnModeChangedAsync(ThemeMode mode)
     {
+        Mode = mode;
+        await ThemeService.SetThemeAsync(mode);
     }
 }

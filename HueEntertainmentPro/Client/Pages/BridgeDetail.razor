@@ -13,7 +13,7 @@
 @inject IHueSetupService HueSetupService
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
-@inject IToastService ToastService
+@inject INotificationService NotificationService
 @inject ResourceExplorerService ResourceExplorerService
 
 <PageTitle>Bridge Details</PageTitle>
@@ -22,7 +22,7 @@
 
 @if (errorMessage != null)
 {
-    <FluentMessageBar Intent="MessageIntent.Error" Style="margin-bottom: 16px;">
+    <FluentMessageBar Intent="MessageBarIntent.Error" Style="margin-bottom: 16px;">
         @errorMessage
     </FluentMessageBar>
 }
@@ -30,16 +30,16 @@
 @if (bridge != null)
 {
     <FluentCard Class="page-card" Style="padding: 1.5rem; margin-bottom: 1.5rem;">
-        <FluentStack Orientation="Orientation.Vertical" Gap="12">
-            <FluentLabel Typo="Typography.PaneHeader">@bridge.Name</FluentLabel>
-            <FluentStack Orientation="Orientation.Vertical" Gap="4">
-                <FluentLabel Typo="Typography.Body">Bridge ID: @bridge.BridgeId</FluentLabel>
-                <FluentLabel Typo="Typography.Body">IP: @bridge.Ip</FluentLabel>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+            <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">@bridge.Name</FluentText>
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="4px">
+                <FluentText As="TextTag.Paragraph">Bridge ID: @bridge.BridgeId</FluentText>
+                <FluentText As="TextTag.Paragraph">IP: @bridge.Ip</FluentText>
             </FluentStack>
-            <FluentStack Orientation="Orientation.Horizontal" Gap="10" Style="margin-top: 8px;">
-                <FluentButton Appearance="Appearance.Accent" @onclick="ShowEditNameDialog" IconStart="@(new Icons.Regular.Size16.Edit())">Edit Name</FluentButton>
-                <FluentButton Appearance="Appearance.Accent" @onclick="ShowEditIpDialog" IconStart="@(new Icons.Regular.Size16.NetworkAdapter())">Edit IP</FluentButton>
-                <FluentButton Appearance="Appearance.Neutral" @onclick="ShowDeleteConfirmation" IconStart="@(new Icons.Regular.Size16.Delete())">Delete Bridge</FluentButton>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10px" Style="margin-top: 8px;">
+                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="ShowEditNameDialog" IconStart="@(new Icons.Regular.Size16.Edit())">Edit Name</FluentButton>
+                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="ShowEditIpDialog" IconStart="@(new Icons.Regular.Size16.NetworkAdapter())">Edit IP</FluentButton>
+                <FluentButton Appearance="ButtonAppearance.Default" @onclick="ShowDeleteConfirmation" IconStart="@(new Icons.Regular.Size16.Delete())">Delete Bridge</FluentButton>
             </FluentStack>
         </FluentStack>
     </FluentCard>
@@ -47,54 +47,54 @@
     <h3>Entertainment Groups</h3>
     @if (entertainmentGroups == null)
     {
-        <FluentStack Orientation="Orientation.Horizontal" Gap="12" VerticalAlignment="VerticalAlignment.Center">
-            <FluentProgressRing />
-            <FluentLabel Typo="Typography.Body">Loading entertainment groups...</FluentLabel>
+        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12px" VerticalAlignment="VerticalAlignment.Center">
+            <FluentSpinner />
+            <FluentText As="TextTag.Paragraph">Loading entertainment groups...</FluentText>
         </FluentStack>
     }
     else if (entertainmentGroups.Any())
     {
-        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
+        <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1rem;">
             <FluentDataGrid Items="@entertainmentGroups" TGridItem="SimpleEntertainmentGroup" RowSize="DataGridRowSize.Medium">
-                <PropertyColumn Title="Name" Property="@(g => g.Name)" Sortable="true" Align="Align.Start" />
-                <PropertyColumn Title="Lights" Property="@(g => g.LightCount)" Sortable="true" Align="Align.Start" />
+                <PropertyColumn Title="Name" Property="@(g => g.Name)" Sortable="true" Align="DataGridCellAlignment.Start" />
+                <PropertyColumn Title="Lights" Property="@(g => g.LightCount)" Sortable="true" Align="DataGridCellAlignment.Start" />
             </FluentDataGrid>
         </FluentCard>
     }
     else
     {
-        <FluentLabel Typo="Typography.Body">No entertainment groups found for this bridge.</FluentLabel>
+        <FluentText As="TextTag.Paragraph">No entertainment groups found for this bridge.</FluentText>
     }
 }
 else if (Id.HasValue)
 {
-    <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
-        <FluentProgressRing />
-        <FluentLabel Typo="Typography.Body">Loading bridge details...</FluentLabel>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
+        <FluentSpinner />
+        <FluentText As="TextTag.Paragraph">Loading bridge details...</FluentText>
     </FluentStack>
 }
 
 @if (bridgeConfig == null && errorMessage == null)
 {
-    <FluentStack Orientation="Orientation.Horizontal" Gap="12" VerticalAlignment="VerticalAlignment.Center" Style="margin-top: 1rem;">
-        <FluentProgressRing />
-        <FluentLabel Typo="Typography.Body">Loading bridge config...</FluentLabel>
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12px" VerticalAlignment="VerticalAlignment.Center" Style="margin-top: 1rem;">
+        <FluentSpinner />
+        <FluentText As="TextTag.Paragraph">Loading bridge config...</FluentText>
     </FluentStack>
 }
 else if (bridgeConfig != null)
 {
     <h3>Bridge Config</h3>
     <FluentCard Class="page-card" Style="padding: 1rem; margin-bottom: 1rem;">
-        <FluentStack Orientation="Orientation.Vertical" Gap="8">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="8px">
             @if (Id.HasValue)
             {
-                <FluentLabel>
+                <FluentText As="TextTag.Paragraph">
                     Explore more bridge details on the <a href="resource-explorer/@Id">Resource Explorer</a>.
-                </FluentLabel>
+                </FluentText>
             }
-            <FluentLabel>
+            <FluentText As="TextTag.Paragraph">
                 View <a href="http://@Ip/description.xml" target="_blank">description.xml</a>.
-            </FluentLabel>
+            </FluentText>
         </FluentStack>
     </FluentCard>
 
@@ -164,32 +164,30 @@ else if (bridgeConfig != null)
         if (bridge == null)
             return;
 
-        var dialogParameters = new DialogParameters
+        var result = await DialogService.ShowDialogAsync<EditNameDialog>(options =>
         {
-            Title = "Edit Bridge Name",
-            PrimaryAction = "Save",
-            SecondaryAction = "Cancel",
-            Width = "400px",
-            Modal = true
-        };
+            options.Width = "400px";
+            options.Header.Title = "Edit Bridge Name";
+            options.Footer.PrimaryAction.Label = "Save";
+            options.Footer.SecondaryAction.Label = "Cancel";
+            options.Parameters = new Dictionary<string, object?>
+            {
+                [nameof(EditNameDialog.Content)] = bridge.Name ?? string.Empty
+            };
+        });
 
-        var dialog = await DialogService.ShowDialogAsync<EditNameDialog>(bridge.Name ?? string.Empty, dialogParameters);
-        var result = await dialog.Result;
-
-        if (!result.Cancelled && result.Data is string newName && !string.IsNullOrWhiteSpace(newName))
+        if (!result.Cancelled && result.Value is string newName && !string.IsNullOrWhiteSpace(newName))
         {
             try
             {
-                //Console.WriteLine("Cancelled:" + result.Cancelled);
-
                 var bridgeResult = await BridgeService.UpdateBridge(new UpdateBridgeRequest() { Id = bridge.Id, Name = newName, Ip = bridge.Ip ?? string.Empty });
                 bridge = bridgeResult;
-                ToastService.ShowSuccess("Bridge name updated successfully.");
+                await NotificationService.ShowSuccessToastAsync("Bridge name updated successfully.");
                 StateHasChanged();
             }
             catch (Exception ex)
             {
-                ToastService.ShowError($"Failed to update bridge name: {ex.Message}");
+                await NotificationService.ShowErrorToastAsync($"Failed to update bridge name: {ex.Message}");
             }
         }
     }
@@ -199,31 +197,31 @@ else if (bridgeConfig != null)
         if (bridge == null)
             return;
 
-        var dialogParameters = new DialogParameters
+        var result = await DialogService.ShowDialogAsync<EditIpDialog>(options =>
         {
-            Title = "Edit Bridge IP",
-            PrimaryAction = "Save",
-            SecondaryAction = "Cancel",
-            Width = "400px",
-            Modal = true
-        };
+            options.Width = "400px";
+            options.Header.Title = "Edit Bridge IP";
+            options.Footer.PrimaryAction.Label = "Save";
+            options.Footer.SecondaryAction.Label = "Cancel";
+            options.Parameters = new Dictionary<string, object?>
+            {
+                [nameof(EditIpDialog.Content)] = bridge.Ip ?? string.Empty
+            };
+        });
 
-        var dialog = await DialogService.ShowDialogAsync<EditIpDialog>(bridge.Ip ?? string.Empty, dialogParameters);
-        var result = await dialog.Result;
-
-        if (!result.Cancelled && result.Data is string newIp && !string.IsNullOrWhiteSpace(newIp))
+        if (!result.Cancelled && result.Value is string newIp && !string.IsNullOrWhiteSpace(newIp))
         {
             try
             {
                 var bridgeResult = await BridgeService.UpdateBridge(new UpdateBridgeRequest() { Id = bridge.Id, Name = bridge.Name ?? string.Empty, Ip = newIp });
                 bridge = bridgeResult;
                 Ip = bridge?.Ip;
-                ToastService.ShowSuccess("Bridge IP updated successfully.");
+                await NotificationService.ShowSuccessToastAsync("Bridge IP updated successfully.");
                 StateHasChanged();
             }
             catch (Exception ex)
             {
-                ToastService.ShowError($"Failed to update bridge IP: {ex.Message}");
+                await NotificationService.ShowErrorToastAsync($"Failed to update bridge IP: {ex.Message}");
             }
         }
     }
@@ -233,24 +231,23 @@ else if (bridgeConfig != null)
         if (bridge == null)
             return;
 
-        var dialog = await DialogService.ShowConfirmationAsync(
+        var result = await DialogService.ShowConfirmationAsync(
             "Are you sure you want to delete this bridge?"
             , "Delete", "Cancel", "Confirm Delete");
-
-        var result = await dialog.Result;
 
         if (!result.Cancelled)
         {
             try
             {
                 await BridgeService.DeleteBridge(new GuidRequest { Id = bridge.Id });
-                ToastService.ShowSuccess("Bridge deleted successfully.");
+                await NotificationService.ShowSuccessToastAsync("Bridge deleted successfully.");
                 Navigation.NavigateTo("bridges");
             }
             catch (Exception ex)
             {
-                ToastService.ShowError($"Failed to delete bridge: {ex.Message}");
+                await NotificationService.ShowErrorToastAsync($"Failed to delete bridge: {ex.Message}");
             }
         }
     }
 }
+

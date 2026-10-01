@@ -1,31 +1,33 @@
 @inherits LayoutComponentBase
 
-<FluentLayout Class="page-layout">
-    <FluentHeader Class="app-header">
-        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" Gap="12">
+<FluentLayout Class="page-layout" Height="100dvh">
+    <FluentLayoutItem Area="LayoutArea.Header" Class="app-header">
+        <FluentLayoutHamburger PanelHeader="Hue Entertainment Pro" />
+        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="12px">
             <FluentIcon Value="@(new Icons.Regular.Size24.Lightbulb())" />
-            <FluentLabel Typo="Typography.Header">Hue Entertainment Pro</FluentLabel>
+            <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">Hue Entertainment Pro</FluentText>
         </FluentStack>
-    </FluentHeader>
+    </FluentLayoutItem>
 
-    <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
+    <FluentLayoutItem Area="LayoutArea.Navigation" Class="nav-area">
         <NavMenu />
-        <FluentBodyContent Class="body-content">
-            <ErrorBoundary>
-                <ChildContent>
-                    <div class="content">
-                        @Body
-                    </div>
-                </ChildContent>
-                <ErrorContent Context="ex">
-                    <div class="blazor-error-boundary">@ex.Message</div>
-                </ErrorContent>
-            </ErrorBoundary>
-        </FluentBodyContent>
-    </FluentStack>
+    </FluentLayoutItem>
 
-    <FluentFooter Class="app-footer">
-        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" Gap="16">
+    <FluentLayoutItem Area="LayoutArea.Content" Class="body-content">
+        <ErrorBoundary>
+            <ChildContent>
+                <div class="content">
+                    @Body
+                </div>
+            </ChildContent>
+            <ErrorContent Context="ex">
+                <div class="blazor-error-boundary">@ex.Message</div>
+            </ErrorContent>
+        </ErrorBoundary>
+    </FluentLayoutItem>
+
+    <FluentLayoutItem Area="LayoutArea.Footer" Class="app-footer">
+        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center" HorizontalGap="16px">
             <a href="https://github.com/michielpost/HueEntertainmentPro" target="_blank" class="footer-link">
                 <FluentIcon Value="@(new Icons.Regular.Size16.Branch())" />
                 <span>GitHub</span>
@@ -36,12 +38,7 @@
                 <span>Created by Michiel Post</span>
             </a>
         </FluentStack>
-    </FluentFooter>
-
-    <FluentToastProvider MaxToastCount="10" />
-    <FluentDialogProvider />
-    <FluentTooltipProvider />
-    <FluentMessageBarProvider />
-    <FluentMenuProvider />
-    <FluentDesignTheme StorageName="theme" />
+    </FluentLayoutItem>
 </FluentLayout>
+
+<FluentProviders />

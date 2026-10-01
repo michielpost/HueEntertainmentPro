@@ -11,49 +11,49 @@
 
 @if (bridges == null || proAreas == null)
 {
-    <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 4rem;">
-        <FluentProgressRing />
-        <FluentLabel Typo="Typography.Body">Loading your setup...</FluentLabel>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 4rem;">
+        <FluentSpinner />
+        <FluentText As="TextTag.Paragraph">Loading your setup...</FluentText>
     </FluentStack>
 }
 else if (!bridges.Any() || !proAreas.Any())
 {
-    <FluentStack Orientation="Orientation.Vertical" Gap="16">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px">
         <h1>Setup</h1>
-        <FluentLabel Class="page-subtitle">
+        <FluentText Class="page-subtitle" As="TextTag.Paragraph">
             Combine entertainment areas from multiple bridges into one entertainment area.
             Display effects and visualize your room in 3d.
-        </FluentLabel>
+        </FluentText>
 
         <FluentCard Class="page-card" Style="padding: 1.5rem;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="12">
-                <FluentLabel Typo="Typography.PaneHeader">1) Start by adding some bridges</FluentLabel>
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+                <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">1) Start by adding some bridges</FluentText>
                 @if (bridges.Any())
                 {
-                    <FluentLabel>You have already added @bridges.Count() bridge(s). You can add more.</FluentLabel>
-                    <FluentButton @onclick="OpenAddBridgeDialog" Appearance="Appearance.Accent">Add Another Bridge</FluentButton>
+                    <FluentText As="TextTag.Paragraph">You have already added @bridges.Count() bridge(s). You can add more.</FluentText>
+                    <FluentButton @onclick="OpenAddBridgeDialog" Appearance="ButtonAppearance.Primary">Add Another Bridge</FluentButton>
                 }
                 else
                 {
-                    <FluentLabel>You haven't added any bridges yet.</FluentLabel>
-                    <FluentLabel>Use the "Add Bridge" button below to add your Hue Bridges. You can add multiple bridges.</FluentLabel>
-                    <FluentButton @onclick="OpenAddBridgeDialog" Appearance="Appearance.Accent">Add Bridge</FluentButton>
+                    <FluentText As="TextTag.Paragraph">You haven't added any bridges yet.</FluentText>
+                    <FluentText As="TextTag.Paragraph">Use the "Add Bridge" button below to add your Hue Bridges. You can add multiple bridges.</FluentText>
+                    <FluentButton @onclick="OpenAddBridgeDialog" Appearance="ButtonAppearance.Primary">Add Bridge</FluentButton>
                 }
             </FluentStack>
         </FluentCard>
 
         <FluentCard Class="page-card" Style="padding: 1.5rem;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="12">
-                <FluentLabel Typo="Typography.PaneHeader">2) Combine multiple entertainment areas into one</FluentLabel>
-                <FluentLabel>Don't worry, you can also start with 1 bridge and 1 area to see what Hue Entertainment Pro can do.</FluentLabel>
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+                <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">2) Combine multiple entertainment areas into one</FluentText>
+                <FluentText As="TextTag.Paragraph">Don't worry, you can also start with 1 bridge and 1 area to see what Hue Entertainment Pro can do.</FluentText>
                 @if (bridges.Any())
                 {
-                    <FluentLabel>You have added @bridges.Count() bridge(s). Now you can create entertainment areas by combining entertainment groups from your bridges.</FluentLabel>
-                    <FluentButton @onclick="OpenAddAreaDialog" Appearance="Appearance.Accent">Add Area</FluentButton>
+                    <FluentText As="TextTag.Paragraph">You have added @bridges.Count() bridge(s). Now you can create entertainment areas by combining entertainment groups from your bridges.</FluentText>
+                    <FluentButton @onclick="OpenAddAreaDialog" Appearance="ButtonAppearance.Primary">Add Area</FluentButton>
                 }
                 else
                 {
-                    <FluentLabel>Once you have added some bridges, you can create entertainment areas by combining entertainment groups from your bridges.</FluentLabel>
+                    <FluentText As="TextTag.Paragraph">Once you have added some bridges, you can create entertainment areas by combining entertainment groups from your bridges.</FluentText>
                 }
             </FluentStack>
         </FluentCard>
@@ -62,41 +62,41 @@ else if (!bridges.Any() || !proAreas.Any())
 else if (proAreas.Any())
 {
     <h1>Entertainment Areas</h1>
-    <FluentLabel Class="page-subtitle">Combined entertainment areas spanning one or more bridges. Start an area to control its lights.</FluentLabel>
+    <FluentText Class="page-subtitle" As="TextTag.Paragraph">Combined entertainment areas spanning one or more bridges. Start an area to control its lights.</FluentText>
 
     <div class="page-actions">
-        <FluentButton @onclick="OpenAddAreaDialog" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Add())">Add Area</FluentButton>
+        <FluentButton @onclick="OpenAddAreaDialog" Appearance="ButtonAppearance.Primary" IconStart="@(new Icons.Regular.Size16.Add())">Add Area</FluentButton>
     </div>
 
     <FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart">
         @foreach (var area in proAreas)
         {
-            <FluentGridItem xs="12" sm="6">
-                <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1.25rem;">
-                    <FluentStack Orientation="Orientation.Vertical" Gap="12">
-                        <FluentLabel Typo="Typography.Header" Weight="FontWeight.Bold">@area.Name</FluentLabel>
+            <FluentGridItem Xs="12" Sm="6">
+                <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1.25rem;">
+                    <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+                        <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Bold">@area.Name</FluentText>
                         @if (area.Connections.Any())
                         {
-                            <FluentLabel Typo="Typography.Body">Entertainment Groups:</FluentLabel>
-                            <FluentStack Orientation="Orientation.Vertical" Gap="4">
+                            <FluentText As="TextTag.Paragraph">Entertainment Groups:</FluentText>
+                            <FluentStack Orientation="Orientation.Vertical" VerticalGap="4px">
                                 @foreach (var conn in area.Connections)
                                 {
-                                    <FluentLabel Typo="Typography.Body">
+                                    <FluentText As="TextTag.Paragraph">
                                         <FluentIcon Value="@(new Icons.Regular.Size12.Circle())" /> @conn.Name (@conn.Bridge.Ip / @conn.Bridge.Name)
-                                    </FluentLabel>
+                                    </FluentText>
                                 }
                             </FluentStack>
                         }
                         else
                         {
-                            <FluentLabel Typo="Typography.Body">No bridges connected</FluentLabel>
+                            <FluentText As="TextTag.Paragraph">No bridges connected</FluentText>
                         }
 
-                        <FluentStack Orientation="Orientation.Horizontal" Gap="8" Style="margin-top: 8px;">
+                        <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8px" Style="margin-top: 8px;">
                             <FluentButton @onclick="() => NavigateToArea(area.Id)" IconStart="@(new Icons.Regular.Size16.Edit())">Edit</FluentButton>
                             @if (area.Connections.Any())
                             {
-                                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(area.Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
+                                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="() => NavigateToPlay(area.Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
                             }
                         </FluentStack>
                     </FluentStack>
@@ -109,22 +109,22 @@ else if (proAreas.Any())
 <h2>Demo Areas</h2>
 
 <FluentGrid Spacing="3" AdaptiveRendering="true" Justify="JustifyContent.FlexStart">
-    <FluentGridItem xs="12" sm="6">
-        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1.25rem;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="12">
-                <FluentLabel Typo="Typography.Header" Weight="FontWeight.Bold">Grid Demo</FluentLabel>
-                <FluentLabel Typo="Typography.Body">2 bridges with lights in a grid layout</FluentLabel>
-                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(ProAreaPlay.demo1Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
+    <FluentGridItem Xs="12" Sm="6">
+        <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1.25rem;">
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+                <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Bold">Grid Demo</FluentText>
+                <FluentText As="TextTag.Paragraph">2 bridges with lights in a grid layout</FluentText>
+                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="() => NavigateToPlay(ProAreaPlay.demo1Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
             </FluentStack>
         </FluentCard>
     </FluentGridItem>
 
-    <FluentGridItem xs="12" sm="6">
-        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1.25rem;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="12">
-                <FluentLabel Typo="Typography.Header" Weight="FontWeight.Bold">Star Demo</FluentLabel>
-                <FluentLabel Typo="Typography.Body">Q42 Office Star Layout (32 lights)</FluentLabel>
-                <FluentButton Appearance="Appearance.Accent" @onclick="() => NavigateToPlay(ProAreaPlay.demo2Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
+    <FluentGridItem Xs="12" Sm="6">
+        <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1.25rem;">
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+                <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Bold">Star Demo</FluentText>
+                <FluentText As="TextTag.Paragraph">Q42 Office Star Layout (32 lights)</FluentText>
+                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="() => NavigateToPlay(ProAreaPlay.demo2Id)" IconStart="@(new Icons.Regular.Size16.Play())">Start</FluentButton>
             </FluentStack>
         </FluentCard>
     </FluentGridItem>
@@ -143,12 +143,13 @@ else if (proAreas.Any())
 
     private async Task OpenAddBridgeDialog()
     {
-        var dialog = await DialogService.ShowDialogAsync<AddBridgeDialog>(new DialogParameters()
+        var result = await DialogService.ShowDialogAsync<AddBridgeDialog>(options =>
         {
-            Title = $"Add a bridge",
-            OnDialogResult = DialogService.CreateDialogCallback(this, HandleDialog),
+            options.Header.Title = "Add a bridge";
         });
 
+        await OnInitializedAsync();
+        StateHasChanged();
     }
 
     private async Task OpenAddAreaDialog()
@@ -161,12 +162,6 @@ else if (proAreas.Any())
         });
 
         NavigateToArea(area.Id);
-    }
-
-    private async Task HandleDialog(DialogResult result)
-    {
-        await OnInitializedAsync();
-        StateHasChanged();
     }
 
     private void NavigateToArea(Guid id)

@@ -4,22 +4,20 @@
 @using HueEntertainmentPro.Client.Services
 @inject NavigationManager NavigationManager
 @inject ResourceExplorerService ResourceExplorerService
+@using FluentUIOrientation = Microsoft.FluentUI.AspNetCore.Components.Orientation
+@using FluentUIVerticalAlignment = Microsoft.FluentUI.AspNetCore.Components.VerticalAlignment
 @inject IDialogService DialogService
 
 @if (Bridge != null && HueResources != null)
 {
 
-    <FluentBreadcrumb Class="breadcrumb">
-        <FluentBreadcrumbItem Href="resource-explorer">
-            Bridges
-        </FluentBreadcrumbItem>
-        <FluentBreadcrumbItem Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, null)">
-            @Bridge.Name (@Bridge.Ip)
-        </FluentBreadcrumbItem>
-        <FluentBreadcrumbItem>
-            @Rtype
-        </FluentBreadcrumbItem>
-    </FluentBreadcrumb>
+    <FluentStack Class="breadcrumb" Orientation="FluentUIOrientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start" VerticalAlignment="FluentUIVerticalAlignment.Center">
+        <FluentLink Href="resource-explorer">Bridges</FluentLink>
+        <FluentText As="TextTag.Span">/</FluentText>
+        <FluentLink Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, null)">@Bridge.Name (@Bridge.Ip)</FluentLink>
+        <FluentText As="TextTag.Span">/</FluentText>
+        <FluentText As="TextTag.Span">@Rtype</FluentText>
+    </FluentStack>
 
     @if (!HueResources.Any())
     {
@@ -27,7 +25,7 @@
     }
 
     <FluentGrid Spacing="4">
-        <FluentGridItem xs="12">
+        <FluentGridItem Xs="12">
             <h4>Resource List (@HueResources.Count())</h4>
             <FluentDataGrid Items="HueResources.AsQueryable()" Style="width: 100%;" AutoFit="true" RowSize="@DataGridRowSize.Medium">
 
@@ -74,7 +72,7 @@
 }
 else
 {
-    <FluentProgressRing>Loading resources...</FluentProgressRing>
+    <FluentSpinner />
 }
 
 @code {
@@ -110,7 +108,6 @@ else
         }
     }
 
-    private IDialogReference? _dialog;
     private async Task OpenMorePanel(HueResource hueResource)
     {
 
@@ -120,13 +117,17 @@ else
             HueResource = hueResource
         };
 
-        _dialog = await DialogService.ShowPanelAsync<ExtensionDataPanel>(vm, new DialogParameters<ExtensionDataPanelViewModel>()
+        await DialogService.ShowDrawerAsync<ExtensionDataPanel>(options =>
         {
-            Content = vm,
-            Alignment = HorizontalAlignment.Right,
-            Title = $"{hueResource.Type}",
-            SecondaryAction = null,
+            options.Alignment = DialogAlignment.End;
+            options.Header.Title = $"{hueResource.Type}";
+            options.Parameters = new Dictionary<string, object?>
+            {
+                [nameof(ExtensionDataPanel.Content)] = vm
+            };
         });
 
     }
 }
+
+

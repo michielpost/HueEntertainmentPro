@@ -9,7 +9,7 @@
 @inject IHueSetupService HueSetupService
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
-@inject IToastService ToastService
+@inject INotificationService NotificationService
 
 <PageTitle>Pro Entertainment Area</PageTitle>
 
@@ -17,7 +17,7 @@
 
 @if (errorMessage != null)
 {
-    <FluentMessageBar Intent="MessageIntent.Error" Style="margin-bottom: 16px;">
+    <FluentMessageBar Intent="MessageBarIntent.Error" Style="margin-bottom: 16px;">
         @errorMessage
     </FluentMessageBar>
 }
@@ -25,11 +25,11 @@
 @if (proArea != null)
 {
     <FluentCard Class="page-card" Style="padding: 1.5rem; margin-bottom: 1.5rem;">
-        <FluentStack Orientation="Orientation.Vertical" Gap="12">
-            <FluentLabel Typo="Typography.PaneHeader">@proArea.Name</FluentLabel>
-            <FluentStack Orientation="Orientation.Horizontal" Gap="10" Style="margin-top: 8px;">
-                <FluentButton Appearance="Appearance.Accent" @onclick="ShowEditNameDialog" IconStart="@(new Icons.Regular.Size16.Edit())">Edit Name</FluentButton>
-                <FluentButton Appearance="Appearance.Neutral" @onclick="ShowDeleteConfirmation" IconStart="@(new Icons.Regular.Size16.Delete())">Delete Area</FluentButton>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+            <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">@proArea.Name</FluentText>
+            <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10px" Style="margin-top: 8px;">
+                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="ShowEditNameDialog" IconStart="@(new Icons.Regular.Size16.Edit())">Edit Name</FluentButton>
+                <FluentButton Appearance="ButtonAppearance.Default" @onclick="ShowDeleteConfirmation" IconStart="@(new Icons.Regular.Size16.Delete())">Delete Area</FluentButton>
             </FluentStack>
         </FluentStack>
     </FluentCard>
@@ -37,16 +37,16 @@
     <h3>Entertainment Groups</h3>
     @if (proArea.Connections.Any())
     {
-        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
+        <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1rem;">
             <FluentDataGrid Items="@proArea.Connections.AsQueryable()"
                             RowSize="@DataGridRowSize.Medium"
                             TGridItem="BridgeGroupConnection">
-                <PropertyColumn Title="IP" Property="@(g => g.Bridge.Ip)" Sortable="true" Align="Align.Start" />
-                <PropertyColumn Title="Bridge" Property="@(g => g.Bridge.Name)" Sortable="true" Align="Align.Start" />
-                <PropertyColumn Title="Entertainment Group" Property="@(g => g.Name)" Sortable="true" Align="Align.Start" />
-                <TemplateColumn Title="Action" Align="Align.End">
-                    <FluentStack Orientation="Orientation.Horizontal" Gap="8">
-                        <FluentButton Appearance="Appearance.Neutral" @onclick="() => RemoveConnection(context.Id)" IconStart="@(new Icons.Regular.Size16.Delete())">Remove</FluentButton>
+                <PropertyColumn Title="IP" Property="@(g => g.Bridge.Ip)" Sortable="true" Align="DataGridCellAlignment.Start" />
+                <PropertyColumn Title="Bridge" Property="@(g => g.Bridge.Name)" Sortable="true" Align="DataGridCellAlignment.Start" />
+                <PropertyColumn Title="Entertainment Group" Property="@(g => g.Name)" Sortable="true" Align="DataGridCellAlignment.Start" />
+                <TemplateColumn Title="Action" Align="DataGridCellAlignment.End">
+                    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8px">
+                        <FluentButton Appearance="ButtonAppearance.Default" @onclick="() => RemoveConnection(context.Id)" IconStart="@(new Icons.Regular.Size16.Delete())">Remove</FluentButton>
                         <FluentButton @onclick="() => IdentifyGroup(context.Bridge.Id, context.GroupId)" IconStart="@(new Icons.Regular.Size16.Lightbulb())">Identify</FluentButton>
                     </FluentStack>
                 </TemplateColumn>
@@ -55,83 +55,81 @@
     }
     else
     {
-        <FluentLabel Typo="Typography.Body">No entertainment groups found for this area.</FluentLabel>
+        <FluentText As="TextTag.Paragraph">No entertainment groups found for this area.</FluentText>
     }
 
     <h3>Add Entertainment Groups</h3>
 
-    var disabled = bridgeOptions?.Where(x => x.Disabled).Any() ?? false;
-    var enabled = bridgeOptions?.Where(x => !x.Disabled).Any() ?? false;
-
-    @if (enabled && disabled)
+    @if (HasDisabledBridges && HasEnabledBridges)
     {
-        <FluentMessageBar Intent="MessageIntent.Warning" Style="margin-bottom: 16px;">
+        <FluentMessageBar Intent="MessageBarIntent.Warning" Style="margin-bottom: 16px;">
             Some bridges are disabled because they are already connected to this area.
         </FluentMessageBar>
     }
-    else if (!enabled)
+    else if (!HasEnabledBridges)
     {
-        <FluentMessageBar Intent="MessageIntent.Warning" Style="margin-bottom: 16px;">
+        <FluentMessageBar Intent="MessageBarIntent.Warning" Style="margin-bottom: 16px;">
             All bridges are already connected to this area. Add more bridges to add more entertainment groups.
-            <FluentNavLink href="bridges">Go to Bridges</FluentNavLink>
+            <FluentLink Href="bridges">Go to Bridges</FluentLink>
         </FluentMessageBar>
     }
 
-    @if (enabled)
+    @if (HasEnabledBridges)
     {
         <FluentCard Class="page-card" Style="padding: 1rem; margin-bottom: 1rem;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="12">
-                <FluentLabel Typo="Typography.Body" Weight="FontWeight.Bold">Select a bridge</FluentLabel>
-                <FluentListbox Items=@bridgeOptions
-                               TOption="Option<Bridge>"
-                               OptionText="@(i => i.Text)"
-                               OptionDisabled="@(i => i.Disabled)"
-                               OptionValue="@(i => i.Value?.Id.ToString())"
-                               @bind-SelectedOption="@selectedBridge"
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
+                <FluentText As="TextTag.Paragraph" Weight="TextWeight.Semibold">Select a bridge</FluentText>
+                <FluentListbox Items="@bridges"
+                               TOption="Bridge"
+                               TValue="string"
+                               OptionText="@(b => $"{b.Name} ({b.Ip})")"
+                               OptionDisabled="@(b => proArea.Connections.Select(x => x.Bridge.Id).Contains(b.Id))"
+                               OptionValue="@(b => b.Id.ToString())"
+                               Value="@selectedBridgeValue"
                                ValueChanged="@(async (string bridge) => await OnBridgeIdSelected(bridge))" />
             </FluentStack>
         </FluentCard>
 
-        @if (selectedBridge?.Value != null)
+        @if (selectedBridge != null)
         {
-            <h4>Entertainment Groups for @selectedBridge.Value.Name</h4>
+            <h4>Entertainment Groups for @selectedBridge.Name</h4>
             @if (entertainmentGroups == null)
             {
-                <FluentStack Orientation="Orientation.Horizontal" Gap="12" VerticalAlignment="VerticalAlignment.Center">
-                    <FluentProgressRing />
-                    <FluentLabel Typo="Typography.Body">Loading entertainment groups...</FluentLabel>
+                <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="12px" VerticalAlignment="VerticalAlignment.Center">
+                    <FluentSpinner />
+                    <FluentText As="TextTag.Paragraph">Loading entertainment groups...</FluentText>
                 </FluentStack>
             }
             else if (entertainmentGroups.Any())
             {
-                <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
+                <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1rem;">
                     <FluentDataGrid Items="@entertainmentGroups"
                                     AutoFit="true"
                                     RowSize="@DataGridRowSize.Medium"
                                     TGridItem="SimpleEntertainmentGroup">
-                        <TemplateColumn Title="Action" Align="Align.Start">
-                            <FluentButton @onclick="() => AddToArea(selectedBridge.Value.Id, context.Id, context.Name)" IconStart="@(new Icons.Regular.Size16.Add())">Add</FluentButton>
+                        <TemplateColumn Title="Action" Align="DataGridCellAlignment.Start">
+                            <FluentButton @onclick="() => AddToArea(selectedBridge.Id, context.Id, context.Name)" IconStart="@(new Icons.Regular.Size16.Add())">Add</FluentButton>
                         </TemplateColumn>
-                        <PropertyColumn Title="Name" Property="@(g => g.Name)" Sortable="true" Align="Align.Start" />
-                        <PropertyColumn Title="Lights" Property="@(g => g.LightCount)" Sortable="true" Align="Align.Start" />
-                        <TemplateColumn Title="Identify" Align="Align.End">
-                            <FluentButton @onclick="() => IdentifyGroup(selectedBridge.Value.Id, context.Id)" IconStart="@(new Icons.Regular.Size16.Lightbulb())">Identify</FluentButton>
+                        <PropertyColumn Title="Name" Property="@(g => g.Name)" Sortable="true" Align="DataGridCellAlignment.Start" />
+                        <PropertyColumn Title="Lights" Property="@(g => g.LightCount)" Sortable="true" Align="DataGridCellAlignment.Start" />
+                        <TemplateColumn Title="Identify" Align="DataGridCellAlignment.End">
+                            <FluentButton @onclick="() => IdentifyGroup(selectedBridge.Id, context.Id)" IconStart="@(new Icons.Regular.Size16.Lightbulb())">Identify</FluentButton>
                         </TemplateColumn>
                     </FluentDataGrid>
                 </FluentCard>
             }
             else
             {
-                <FluentLabel Typo="Typography.Body">No entertainment groups found for this bridge.</FluentLabel>
+                <FluentText As="TextTag.Paragraph">No entertainment groups found for this bridge.</FluentText>
             }
         }
     }
 }
 else
 {
-    <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
-        <FluentProgressRing />
-        <FluentLabel Typo="Typography.Body">Loading area details...</FluentLabel>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
+        <FluentSpinner />
+        <FluentText As="TextTag.Paragraph">Loading area details...</FluentText>
     </FluentStack>
 }
 
@@ -145,16 +143,21 @@ else
 	private IQueryable<SimpleEntertainmentGroup>? entertainmentGroups;
 	private IEnumerable<Bridge>? bridges;
 
-	private List<Option<Bridge>>? bridgeOptions;
-	private Option<Bridge>? selectedBridge;
+	private Bridge? selectedBridge;
+	private string? selectedBridgeValue;
+
+	private bool HasDisabledBridges =>
+		bridges?.Any(b => proArea?.Connections.Select(x => x.Bridge.Id).Contains(b.Id) ?? false) ?? false;
+	private bool HasEnabledBridges =>
+		bridges?.Any(b => !(proArea?.Connections.Select(x => x.Bridge.Id).Contains(b.Id) ?? false)) ?? false;
 
 	protected override async Task OnInitializedAsync()
 	{
 		try
 		{
 			selectedBridge = null;
+			selectedBridgeValue = null;
 			entertainmentGroups = null;
-			bridgeOptions = null;
 			bridges = null;
 
 			// Load bridge details
@@ -166,12 +169,6 @@ else
 			}
 
 			bridges = await BridgeService.GetBridges();
-			bridgeOptions = bridges.Select(b => new Option<Bridge>
-			{
-				Value = b,
-				Text = $"{b.Name} ({b.Ip})",
-				Disabled = proArea.Connections.Select(x => x.Bridge.Id).Contains(b.Id)
-			}).ToList();
 
 		}
 		catch (Exception ex)
@@ -185,32 +182,30 @@ else
 		if (proArea == null)
 			return;
 
-		var dialogParameters = new DialogParameters
+		var result = await DialogService.ShowDialogAsync<EditNameDialog>(options =>
 		{
-			Title = "Edit Area Name",
-			PrimaryAction = "Save",
-			SecondaryAction = "Cancel",
-			Width = "400px",
-			Modal = true
-		};
+			options.Width = "400px";
+			options.Header.Title = "Edit Area Name";
+			options.Footer.PrimaryAction.Label = "Save";
+			options.Footer.SecondaryAction.Label = "Cancel";
+			options.Parameters = new Dictionary<string, object?>
+			{
+				[nameof(EditNameDialog.Content)] = proArea.Name ?? string.Empty
+			};
+		});
 
-		var dialog = await DialogService.ShowDialogAsync<EditNameDialog>(proArea.Name ?? string.Empty, dialogParameters);
-		var result = await dialog.Result;
-
-		if (!result.Cancelled && result.Data is string newName && !string.IsNullOrWhiteSpace(newName))
+		if (!result.Cancelled && result.Value is string newName && !string.IsNullOrWhiteSpace(newName))
 		{
 			try
 			{
-				//Console.WriteLine("Cancelled:" + result.Cancelled);
-
 				var proAreaResult = await ProAreaDataService.UpdateProArea(new UpdateProAreaRequest() { Id = proArea.Id, Name = newName });
 				proArea = proAreaResult;
-				ToastService.ShowSuccess("Name updated successfully.");
+				await NotificationService.ShowSuccessToastAsync("Name updated successfully.");
 				StateHasChanged();
 			}
 			catch (Exception ex)
 			{
-				ToastService.ShowError($"Failed to update name: {ex.Message}");
+				await NotificationService.ShowErrorToastAsync($"Failed to update name: {ex.Message}");
 			}
 		}
 	}
@@ -220,23 +215,21 @@ else
 		if (proArea == null)
 			return;
 
-		var dialog = await DialogService.ShowConfirmationAsync(
+		var result = await DialogService.ShowConfirmationAsync(
 			"Are you sure you want to delete this area?"
 			, "Delete", "Cancel", "Confirm Delete");
-
-		var result = await dialog.Result;
 
 		if (!result.Cancelled)
 		{
 			try
 			{
 				await ProAreaDataService.DeleteProArea(new GuidRequest { Id = proArea.Id });
-				ToastService.ShowSuccess("Area deleted successfully.");
+				await NotificationService.ShowSuccessToastAsync("Area deleted successfully.");
 				Navigation.NavigateTo("");
 			}
 			catch (Exception ex)
 			{
-				ToastService.ShowError($"Failed to delete area: {ex.Message}");
+				await NotificationService.ShowErrorToastAsync($"Failed to delete area: {ex.Message}");
 			}
 		}
 	}
@@ -244,19 +237,18 @@ else
 	private async Task OnBridgeIdSelected(string bridgeId)
 	{
 		entertainmentGroups = null;
+		selectedBridge = bridges?.FirstOrDefault(b => b.Id.ToString() == bridgeId);
+		selectedBridgeValue = bridgeId;
 		StateHasChanged();
 
-		var id = Guid.Parse(bridgeId);
-		var bridge = bridges?.FirstOrDefault(b => b.Id == id);
-
-		if (bridge == null)
+		if (selectedBridge == null)
 			return;
 
 		// Load entertainment groups
 		var result = await HueSetupService.GetEntertainmentGroupsAsync(new HueLightDJ.Services.Interfaces.Models.Requests.HueSetupRequest()
 		{
-			Ip = bridge.Ip,
-			Key = bridge.Username
+			Ip = selectedBridge.Ip,
+			Key = selectedBridge.Username
 		});
 		entertainmentGroups = result.Groups.AsQueryable();
 
@@ -312,3 +304,4 @@ else
 		StateHasChanged();
 	}
 }
+

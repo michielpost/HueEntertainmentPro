@@ -3,29 +3,29 @@
 @inject AudioBeatJsInterop AudioBeatJsInterop
 
 <div id="@ContainerId">
-    <FluentStack Orientation="Orientation.Vertical" Gap="10">
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="10px">
         @if (!isListening)
         {
-            <FluentButton Appearance="Appearance.Accent" OnClick="@(() => StartAsync("microphone"))" IconStart="@(new Icons.Regular.Size16.Mic())">Use Microphone</FluentButton>
-            <FluentButton Appearance="Appearance.Accent" OnClick="@(() => StartAsync("system"))" IconStart="@(new Icons.Regular.Size16.Speaker2())">Capture PC Audio</FluentButton>
-            <FluentLabel Typo="Typography.Body" Style="font-size: 12px; opacity: 0.7;">For PC audio: pick a tab or screen and enable "Share audio".</FluentLabel>
+            <FluentButton Appearance="ButtonAppearance.Primary" OnClick="@(() => StartAsync("microphone"))" IconStart="@(new Icons.Regular.Size16.Mic())">Use Microphone</FluentButton>
+            <FluentButton Appearance="ButtonAppearance.Primary" OnClick="@(() => StartAsync("system"))" IconStart="@(new Icons.Regular.Size16.Speaker2())">Capture PC Audio</FluentButton>
+            <FluentText As="TextTag.Paragraph" Style="font-size: 12px; opacity: 0.7;">For PC audio: pick a tab or screen and enable "Share audio".</FluentText>
         }
         else
         {
             <div class="beat-row">
                 <span class="beat-dot"></span>
-                <FluentLabel Typo="Typography.Body">@(detectedBpm > 0 ? $"{detectedBpm} BPM" : "Listening for beats...")</FluentLabel>
+                <FluentText As="TextTag.Paragraph">@(detectedBpm > 0 ? $"{detectedBpm} BPM" : "Listening for beats...")</FluentText>
             </div>
             <canvas class="beat-canvas"></canvas>
-            <FluentLabel Typo="Typography.Body" Style="font-size: 12px; opacity: 0.7;">Beats light up in the graph. Drag the dashed line to set how high a peak must be to count as a beat.</FluentLabel>
-            <FluentLabel Typo="Typography.Body">Beats detected: @beatCount</FluentLabel>
-            <FluentLabel Typo="Typography.Body">Sensitivity</FluentLabel>
+            <FluentText As="TextTag.Paragraph" Style="font-size: 12px; opacity: 0.7;">Beats light up in the graph. Drag the dashed line to set how high a peak must be to count as a beat.</FluentText>
+            <FluentText As="TextTag.Paragraph">Beats detected: @beatCount</FluentText>
+            <FluentText As="TextTag.Paragraph">Sensitivity</FluentText>
             <FluentSlider Value="@sensitivity" ValueChanged="@((double value) => SetSensitivityAsync(value))" Min="1" Max="10" Step="0.5"></FluentSlider>
-            <FluentButton Appearance="Appearance.Neutral" OnClick="StopAsync" IconStart="@(new Icons.Regular.Size16.MicOff())">Stop Listening</FluentButton>
+            <FluentButton Appearance="ButtonAppearance.Default" OnClick="StopAsync" IconStart="@(new Icons.Regular.Size16.MicOff())">Stop Listening</FluentButton>
         }
         @if (error != null)
         {
-            <FluentMessageBar Intent="MessageIntent.Warning">@error</FluentMessageBar>
+            <FluentMessageBar Intent="MessageBarIntent.Warning">@error</FluentMessageBar>
         }
     </FluentStack>
 </div>

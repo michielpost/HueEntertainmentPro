@@ -3,40 +3,39 @@
 @using HueEntertainmentPro.Client.Services
 @inject NavigationManager NavigationManager
 @inject ResourceExplorerService ResourceExplorerService
+@using FluentUIOrientation = Microsoft.FluentUI.AspNetCore.Components.Orientation
+@using FluentUIVerticalAlignment = Microsoft.FluentUI.AspNetCore.Components.VerticalAlignment
 
 @if (Bridge != null && (Clips?.Any() ?? false))
 {
     <!-- Breadcrumb -->
-    <FluentBreadcrumb Class="breadcrumb">
-        <FluentBreadcrumbItem Href="resource-explorer">
-            Bridges
-        </FluentBreadcrumbItem>
-        <FluentBreadcrumbItem>
-            API list
-        </FluentBreadcrumbItem>
-    </FluentBreadcrumb>
+    <FluentStack Class="breadcrumb" Orientation="FluentUIOrientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start" VerticalAlignment="FluentUIVerticalAlignment.Center">
+        <FluentLink Href="resource-explorer">Bridges</FluentLink>
+        <FluentText As="TextTag.Span">/</FluentText>
+        <FluentText As="TextTag.Span">API list</FluentText>
+    </FluentStack>
 
     <!-- Title -->
     <h2>API List</h2>
 
     <!-- Vertical Links -->
     <div class="link-list-vertical">
-        <FluentNavLink Class="nav-link" Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, "all")">
+        <FluentLink Class="nav-link" Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, "all")">
             all
-        </FluentNavLink>
+        </FluentLink>
 
         @foreach (var clip in Clips.First().Resources)
         {
-            <FluentNavLink Class="nav-link" Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, clip)">
+            <FluentLink Class="nav-link" Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, clip)">
                 @clip
-            </FluentNavLink>
+            </FluentLink>
         }
     </div>
 }
 else
 {
     <div>
-        <FluentProgressRing />
+        <FluentSpinner />
         <span>Loading resources...</span>
     </div>
 }
@@ -58,3 +57,5 @@ else
         }
     }
 }
+
+

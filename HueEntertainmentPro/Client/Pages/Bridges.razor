@@ -11,37 +11,37 @@
 <h1>Bridges</h1>
 
 <div class="page-actions">
-    <FluentButton @onclick="OpenAddDialog" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Add())">Add Bridge</FluentButton>
+    <FluentButton @onclick="OpenAddDialog" Appearance="ButtonAppearance.Primary" IconStart="@(new Icons.Regular.Size16.Add())">Add Bridge</FluentButton>
 </div>
 
 @if (bridges == null)
 {
-    <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
-        <FluentProgressRing />
-        <FluentLabel Typo="Typography.Body">Loading bridges...</FluentLabel>
+    <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
+        <FluentSpinner />
+        <FluentText As="TextTag.Paragraph">Loading bridges...</FluentText>
     </FluentStack>
 }
 else if (!bridges.Any())
 {
-    <FluentCard Class="page-card" MinimalStyle="true">
+    <FluentCard Class="page-card" Appearance="CardAppearance.Subtle">
         <div class="empty-state">
             <FluentIcon Value="@(new Icons.Regular.Size48.Lightbulb())" Color="Color.Disabled" />
             <h3>No bridges yet</h3>
-            <FluentLabel Typo="Typography.Body">Add your first Hue Bridge to get started. Make sure your bridge is connected to the same network.</FluentLabel>
-            <FluentButton @onclick="OpenAddDialog" Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size16.Add())">Add Bridge</FluentButton>
+            <FluentText As="TextTag.Paragraph">Add your first Hue Bridge to get started. Make sure your bridge is connected to the same network.</FluentText>
+            <FluentButton @onclick="OpenAddDialog" Appearance="ButtonAppearance.Primary" IconStart="@(new Icons.Regular.Size16.Add())">Add Bridge</FluentButton>
         </div>
     </FluentCard>
 }
 else
 {
-    <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem;">
+    <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1rem;">
         <FluentDataGrid Id="bridgegrid" Items="@bridges" GridTemplateColumns="2fr 2fr 2fr auto" TGridItem="Bridge" RowSize="DataGridRowSize.Medium">
-            <TemplateColumn Title="Name" Sortable="true" Align="Align.Start">
+            <TemplateColumn Title="Name" Sortable="true" Align="DataGridCellAlignment.Start">
                 <NavLink href="@($"bridge/{context.Id}")">@context.Name</NavLink>
             </TemplateColumn>
-            <PropertyColumn Title="IP" Property="@(b => b.Ip)" Sortable="true" Align="Align.Start" />
-            <PropertyColumn Title="Id" Property="@(b => b.Id)" Sortable="true" Align="Align.Start" />
-            <TemplateColumn Title="" Align="Align.End">
+            <PropertyColumn Title="IP" Property="@(b => b.Ip)" Sortable="true" Align="DataGridCellAlignment.Start" />
+            <PropertyColumn Title="Id" Property="@(b => b.Id)" Sortable="true" Align="DataGridCellAlignment.Start" />
+            <TemplateColumn Title="" Align="DataGridCellAlignment.End">
                 <NavLink href="@($"bridge/{context.Id}")" title="Edit">
                     <FluentIcon Value="@(new Icons.Regular.Size16.Edit())" />
                 </NavLink>
@@ -62,16 +62,11 @@ else
 
     private async Task OpenAddDialog()
     {
-        var dialog = await DialogService.ShowDialogAsync<AddBridgeDialog>(new DialogParameters()
+        var result = await DialogService.ShowDialogAsync<AddBridgeDialog>(options =>
         {
-            Title = $"Add a bridge",
-            OnDialogResult = DialogService.CreateDialogCallback(this, HandleDialog),
+            options.Header.Title = "Add a bridge";
         });
 
-    }
-
-    private async Task HandleDialog(DialogResult result)
-    {
         await OnInitializedAsync();
         StateHasChanged();
     }
@@ -81,4 +76,3 @@ else
         Navigation.NavigateTo($"bridge/{id}");
     }
 }
-

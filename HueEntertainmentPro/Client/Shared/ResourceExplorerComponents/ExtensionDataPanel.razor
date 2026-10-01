@@ -1,7 +1,7 @@
 @using System.Text.Json
 @using HueEntertainmentPro.Client.Models
 @using HueEntertainmentPro.Client.Services
-@implements IDialogContentComponent<ExtensionDataPanelViewModel>
+@inherits FluentDialogInstance
 @inject ResourceExplorerService ResourceExplorerService
 
 <FluentDialogBody>
@@ -26,4 +26,16 @@
 @code {
     [Parameter]
     public ExtensionDataPanelViewModel Content { get; set; } = default!;
+
+    protected override void OnInitializeDialog(DialogOptionsHeader header, DialogOptionsFooter footer)
+    {
+        header.Title = Content?.HueResource.Type ?? string.Empty;
+        footer.PrimaryAction.Visible = false;
+        footer.SecondaryAction.Visible = false;
+    }
+
+    protected override Task OnActionClickedAsync(bool primary)
+    {
+        return Task.CompletedTask;
+    }
 }

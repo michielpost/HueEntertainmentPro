@@ -4,23 +4,20 @@
 @using System.Text.Json
 @inject NavigationManager NavigationManager
 @inject ResourceExplorerService ResourceExplorerService
+@using FluentUIOrientation = Microsoft.FluentUI.AspNetCore.Components.Orientation
+@using FluentUIVerticalAlignment = Microsoft.FluentUI.AspNetCore.Components.VerticalAlignment
 
 @if (Bridge != null && HueResource != null)
 {
-    <FluentBreadcrumb Class="breadcrumb">
-        <FluentBreadcrumbItem Href="resource-explorer">
-            Bridges
-        </FluentBreadcrumbItem>
-        <FluentBreadcrumbItem Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, null)">
-            @Bridge.Name (@Bridge.Ip)
-        </FluentBreadcrumbItem>
-        <FluentBreadcrumbItem Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, Rtype)">
-            @Rtype
-        </FluentBreadcrumbItem>
-        <FluentBreadcrumbItem>
-            @Rid
-        </FluentBreadcrumbItem>
-    </FluentBreadcrumb>
+    <FluentStack Class="breadcrumb" Orientation="FluentUIOrientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Start" VerticalAlignment="FluentUIVerticalAlignment.Center">
+        <FluentLink Href="resource-explorer">Bridges</FluentLink>
+        <FluentText As="TextTag.Span">/</FluentText>
+        <FluentLink Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, null)">@Bridge.Name (@Bridge.Ip)</FluentLink>
+        <FluentText As="TextTag.Span">/</FluentText>
+        <FluentLink Href="@ResourceExplorerService.CreateResourceLink(Bridge.Id, Rtype)">@Rtype</FluentLink>
+        <FluentText As="TextTag.Span">/</FluentText>
+        <FluentText As="TextTag.Span">@Rid</FluentText>
+    </FluentStack>
 
     <h3>Resource Detail</h3>
 
@@ -31,7 +28,7 @@
 }
 else
 {
-    <FluentProgressRing>Loading resource details...</FluentProgressRing>
+    <FluentSpinner />
 }
 
 @code {
@@ -58,3 +55,5 @@ else
         }
     }
 }
+
+

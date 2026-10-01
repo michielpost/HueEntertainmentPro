@@ -1,5 +1,5 @@
-@implements IDialogContentComponent
-@inject IToastService ToastService
+@inherits FluentDialogInstance
+@inject INotificationService NotificationService
 @inject IHueSetupService HueSetupService
 @inject IBridgeDataService BridgeDataService
 @using HueEntertainmentPro.Client.Models
@@ -9,12 +9,12 @@
 @using HueLightDJ.Services.Interfaces.Models
 @using Microsoft.FluentUI.AspNetCore.Components
 
-<FluentDialog Modal="true" TrapFocus="true" Header="Add Hue Bridge">
-    <FluentStack Orientation="Orientation.Vertical" Style="padding: 16px; min-width: 420px; gap: 16px;">
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical" Style="padding: 16px; min-width: 420px;">
         <FluentCard Style="padding: 12px;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="8">
-                <FluentLabel Typo="Typography.Body" Weight="FontWeight.Bold">Discovered IP Addresses</FluentLabel>
-                <FluentListbox Items="@DiscoveredIps"
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="8px">
+                <FluentText As="TextTag.Paragraph" Weight="TextWeight.Semibold">Discovered IP Addresses</FluentText>
+                <FluentListbox Items="@DiscoveredIps" TOption="LocatedBridge" TValue="string"
                                Height="150px"
                                OptionValue="@(i => i.BridgeId)"
                                ValueChanged="@(async (string id) => OnBridgeIdSelected(id))">
@@ -26,54 +26,54 @@
         </FluentCard>
 
         <FluentCard Style="padding: 12px;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="10">
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="10px">
                 <FluentCheckbox @bind-Value="@EditIp"
                                 Label="Manually enter IP" />
-                <FluentTextField Label="IP Address"
+                <FluentTextInput Label="IP Address"
                                  @bind-Value="@BridgeConfig.IpAddress"
                                  Placeholder="e.g., 192.168.1.100"
                                  Disabled="@(!EditIp)" />
                 @if (IsFormValid)
                 {
-                    <FluentAnchor Appearance="Appearance.Neutral" Href="@($"bridge/{BridgeConfig.IpAddress}")" Target="_blank">
+                    <FluentLink Appearance="LinkAppearance.Default" Href="@($"bridge/{BridgeConfig.IpAddress}")" Target="LinkTarget.Blank">
                         View Bridge Config
-                    </FluentAnchor>
+                    </FluentLink>
                 }
             </FluentStack>
         </FluentCard>
 
         <FluentCard Style="padding: 12px;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="10">
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="10px">
                 <FluentCheckbox @bind-Value="@ShowSecrets"
                                 Label="Manually enter username and key" />
                 @if (ShowSecrets)
                 {
-                    <FluentTextField Label="Username"
+                    <FluentTextInput Label="Username"
                                      @bind-Value="@BridgeConfig.Username"
                                      Placeholder="e.g., 1028d66426293e821ecfd9ef1a0731df" />
-                    <FluentTextField Label="Streaming Client Key"
+                    <FluentTextInput Label="Streaming Client Key"
                                      @bind-Value="@BridgeConfig.StreamingClientKey"
                                      Placeholder="Streaming Client Key" />
                 }
             </FluentStack>
         </FluentCard>
 
-        <FluentTextField Label="Name (optional)"
+        <FluentTextInput Label="Name (optional)"
                          @bind-Value="@BridgeConfig.Name"
                          Placeholder="Name to identify the bridge" />
 
         @if (!string.IsNullOrEmpty(ErrorMessage))
         {
-            <FluentMessageBar Intent="MessageIntent.Error">
+            <FluentMessageBar Intent="MessageBarIntent.Error">
                 @ErrorMessage
             </FluentMessageBar>
         }
 
         <FluentStack Orientation="Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Right" Style="margin-top: 8px;">
-            <FluentButton Appearance="Appearance.Neutral" OnClick="@CloseDialog">Cancel</FluentButton>
+            <FluentButton Appearance="ButtonAppearance.Default" OnClick="@CloseDialog">Cancel</FluentButton>
             @if (ShowSecrets)
             {
-                <FluentButton Appearance="Appearance.Accent"
+                <FluentButton Appearance="ButtonAppearance.Primary"
                               OnClick="@AddBridge"
                               Disabled="@(!IsFormValid)">
                     Save
@@ -81,7 +81,7 @@
             }
             else
             {
-                <FluentButton Appearance="Appearance.Accent"
+                <FluentButton Appearance="ButtonAppearance.Primary"
                               OnClick="@AddBridge"
                               Disabled="@(!IsFormValid)">
                     Push Bridge Button and Click Save
@@ -89,12 +89,9 @@
             }
         </FluentStack>
     </FluentStack>
-</FluentDialog>
+</FluentDialogBody>
 
 @code {
-    [CascadingParameter]
-    public FluentDialog? Dialog { get; set; }
-
     private bool EditIp { get; set; } = false;
     private bool ShowSecrets { get; set; } = false;
     private string ErrorMessage { get; set; } = string.Empty;
@@ -106,9 +103,23 @@
         (EditIp == false || !ShowSecrets ||
          (!string.IsNullOrEmpty(BridgeConfig.Username) && !string.IsNullOrEmpty(BridgeConfig.StreamingClientKey)));
 
+    protected override void OnInitializeDialog(DialogOptionsHeader header, DialogOptionsFooter footer)
+    {
+        header.Title = "Add Hue Bridge";
+        footer.PrimaryAction.Visible = false;
+        footer.SecondaryAction.Visible = false;
+    }
+
+    protected override async Task OnActionClickedAsync(bool primary)
+    {
+        if (!primary)
+            await DialogInstance.CancelAsync();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await DiscoverIps();
+        await base.OnInitializedAsync();
     }
 
     private async Task DiscoverIps()
@@ -210,8 +221,8 @@
             });
             if (result != null)
             {
-                ToastService.ShowSuccess($"Added bridge {BridgeConfig.IpAddress} successfully.");
-                CloseDialog();
+                await NotificationService.ShowSuccessToastAsync($"Added bridge {BridgeConfig.IpAddress} successfully.");
+                await DialogInstance.CloseAsync();
             }
             else
             {
@@ -225,8 +236,9 @@
         StateHasChanged();
     }
 
-    private void CloseDialog()
+    private async Task CloseDialog()
     {
-        Dialog?.CloseAsync();
+        await DialogInstance.CloseAsync();
     }
 }
+

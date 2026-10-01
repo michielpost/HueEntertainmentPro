@@ -1,30 +1,25 @@
-@implements IDialogContentComponent
+@inherits FluentDialogInstance
 
-<FluentDialogHeader>Edit Bridge IP</FluentDialogHeader>
 <FluentDialogBody>
-    <FluentTextField Label="Bridge IP" @bind-Value="Content" Style="width: 100%;" />
+    <FluentTextInput Label="Bridge IP" @bind-Value="Content" Style="width: 100%;" />
 </FluentDialogBody>
-<FluentDialogFooter>
-    <FluentButton Appearance="Appearance.Accent" @onclick="Submit">Save</FluentButton>
-    <FluentButton Appearance="Appearance.Neutral" @onclick="Cancel">Cancel</FluentButton>
-</FluentDialogFooter>
 
 @code {
-    [CascadingParameter]
-    private FluentDialog? Dialog { get; set; }
-
     [Parameter]
     public string Content { get; set; } = string.Empty;
 
-    private async Task Submit()
+    protected override void OnInitializeDialog(DialogOptionsHeader header, DialogOptionsFooter footer)
     {
-        if (Dialog != null)
-            await Dialog.CloseAsync(Content);
+        header.Title = "Edit Bridge IP";
+        footer.PrimaryAction.Label = "Save";
+        footer.SecondaryAction.Label = "Cancel";
     }
 
-    private async Task Cancel()
+    protected override async Task OnActionClickedAsync(bool primary)
     {
-        if (Dialog != null)
-            await Dialog.CancelAsync();
+        if (primary)
+            await DialogInstance.CloseAsync(Content);
+        else
+            await DialogInstance.CancelAsync();
     }
 }

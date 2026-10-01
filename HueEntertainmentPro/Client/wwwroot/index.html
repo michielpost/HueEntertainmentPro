@@ -24,10 +24,16 @@
   <link href="_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/app.css" />
   <link rel="stylesheet" href="HueEntertainmentPro.Client.styles.css" />
-
-  <!-- Set the default theme -->
-  <script src="_content/Microsoft.FluentUI.AspNetCore.Components/js/loading-theme.js" type="text/javascript"></script>
-  <loading-theme storage-name="theme"></loading-theme>
+  <style>
+    /* Set the default dark mode styles, used before the Fluent UI theme switcher is initialized.
+       This avoids a flash of white when in dark mode. */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #292929;
+        color: #ffffff;
+      }
+    }
+  </style>
 </head>
 
 <body>

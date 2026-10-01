@@ -14,26 +14,26 @@
 <PageTitle>Resource Explorer</PageTitle>
 
 <h1>Resource Explorer</h1>
-<FluentLabel Class="page-subtitle">Explore available resources on your bridges.</FluentLabel>
+<FluentText As="TextTag.Paragraph" Class="page-subtitle">Explore available resources on your bridges.</FluentText>
 
 @if (!Id.HasValue || selectedBridge == null)
 {
     @if (bridges == null)
     {
-        <FluentStack Orientation="Orientation.Vertical" Gap="16" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
-            <FluentProgressRing />
-            <FluentLabel Typo="Typography.Body">Loading bridges...</FluentLabel>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="16px" HorizontalAlignment="HorizontalAlignment.Center" Style="padding-top: 2rem;">
+            <FluentSpinner />
+            <FluentText As="TextTag.Paragraph">Loading bridges...</FluentText>
         </FluentStack>
     }
     else
     {
-        <FluentCard Class="page-card" MinimalStyle="true" Style="padding: 1rem; max-width: 600px;">
-            <FluentStack Orientation="Orientation.Vertical" Gap="8">
-                <FluentLabel Typo="Typography.PaneHeader">Select a bridge</FluentLabel>
+        <FluentCard Class="page-card" Appearance="CardAppearance.Subtle" Style="padding: 1rem; max-width: 600px;">
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="8px">
+                <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">Select a bridge</FluentText>
                 <div class="link-list-vertical">
                     @foreach (var bridge in bridges)
                     {
-                        <FluentNavLink Class="nav-link" Href="@ResourceExplorerService.CreateResourceLink(bridge.Id, null)">@bridge.Name (@bridge.Ip)</FluentNavLink>
+                        <FluentLink Class="nav-link" Href="@ResourceExplorerService.CreateResourceLink(bridge.Id, null)">@bridge.Name (@bridge.Ip)</FluentLink>
                     }
                 </div>
             </FluentStack>
@@ -58,7 +58,6 @@ else
 @code {
 
     private IQueryable<Bridge>? bridges;
-    private List<Option<Bridge>>? bridgeOptions;
 
     private Bridge? selectedBridge;
 
@@ -77,12 +76,6 @@ else
     {
         var result = await BridgeDataService.GetBridges();
         bridges = result.AsQueryable();
-        bridgeOptions = bridges.Select(b => new Option<Bridge>
-        {
-            Value = b,
-            Text = $"{b.Name} ({b.Ip})"
-        }).ToList();
-
 
     }
 
@@ -117,3 +110,4 @@ else
 
 
 }
+

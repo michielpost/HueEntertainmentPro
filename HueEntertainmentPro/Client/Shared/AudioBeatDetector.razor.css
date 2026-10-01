@@ -8,7 +8,7 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background-color: var(--neutral-stroke-strong, #888);
+    background-color: var(--colorNeutralStroke2, #888);
     transition: background-color 0.2s ease-out;
     flex-shrink: 0;
 }
@@ -19,13 +19,13 @@
 
 @keyframes beat-pulse {
     0% {
-        background-color: var(--accent-fill-rest, #0078d4);
+        background-color: var(--colorBrandBackground, #0078d4);
         transform: scale(1.5);
-        box-shadow: 0 0 12px var(--accent-fill-rest, #0078d4);
+        box-shadow: 0 0 12px var(--colorBrandBackground, #0078d4);
     }
 
     100% {
-        background-color: var(--neutral-stroke-strong, #888);
+        background-color: var(--colorNeutralStroke2, #888);
         transform: scale(1);
         box-shadow: none;
     }
