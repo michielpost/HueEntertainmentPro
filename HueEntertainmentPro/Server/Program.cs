@@ -53,6 +53,12 @@ if (dbPath != null && !Directory.Exists(dbPath))
   Directory.CreateDirectory(dbPath);
 }
 
+// Remove stale SQLite WAL/SHM files left behind by an abrupt shutdown or crash.
+// On network filesystems (e.g. NAS / Docker) a leftover -wal/-shm pair can prevent
+// the database from opening ("database is locked"). This must run before the
+// database is first opened below.
+CleanupStaleWalFiles(sqlLiteBuilder.DataSource);
+
 // Ensure database is created and apply migrations
 using (var scope = app.Services.CreateScope())
 {
@@ -155,3 +161,45 @@ app.MapFallback("{**path}", async context =>
 });
 
 app.Run();
+
+internal static partial class Program
+{
+    // Deletes a database's stale -wal/-shm sidecar files if present, but only when
+    // no other process currently has the database open. Opening the main file with
+    // an exclusive lock succeeds only when nothing else is using it, so any leftover
+    // sidecars at that point are safe to remove (a genuine lock, e.g. a live second
+    // instance, is left untouched to avoid corrupting data).
+    private static void CleanupStaleWalFiles(string? dbPath)
+    {
+        if (string.IsNullOrEmpty(dbPath)) return;
+
+        string[] sidecars = { dbPath + "-wal", dbPath + "-shm" };
+        if (!sidecars.Any(File.Exists)) return;
+
+        if (File.Exists(dbPath))
+        {
+            try
+            {
+                using var probe = new FileStream(dbPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                // The database is still in use by another process; leave the files alone.
+                //return;
+            }
+        }
+
+        foreach (var file in sidecars)
+        {
+            try
+            {
+                if (File.Exists(file))
+                    File.Delete(file);
+            }
+            catch (IOException)
+            {
+                // Transiently locked; skip and let startup continue.
+            }
+        }
+    }
+}
