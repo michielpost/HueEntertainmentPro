@@ -48,7 +48,7 @@ DEMO:  [https://huelightdj.azurewebsites.net/](https://huelightdj.azurewebsites.
 ![3D preview](screenshots/3d_preview.gif)
 
 ## Tech
-- ASP.Net Core 10.0 backend
+- ASP.Net Core 11.0 backend
 - SignalR for realtime communication from server to client
 - gRPC for client to server communication
 - [HueApi](https://github.com/michielpost/Q42.HueApi) for communicating with the Hue Bridge
@@ -58,7 +58,7 @@ DEMO:  [https://huelightdj.azurewebsites.net/](https://huelightdj.azurewebsites.
 - SQLite for data storage
 
 ## **Build and Install Instructions**
-- Make sure to have [.Net 10.0](https://dotnet.microsoft.com/download) installed to build this project (`dotnet build`)
+- Make sure to have [.Net 11.0](https://dotnet.microsoft.com/download) installed to build this project (`dotnet build`)
 - Run the HueEntertainmentPro.Server project(`cd HueEntertainmentPro\Server && dotnet run`) 
 - Follow the instructions to link your bridge or use the DEMO setup
 

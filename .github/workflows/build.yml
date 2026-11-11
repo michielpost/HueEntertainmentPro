@@ -12,7 +12,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Install maui workloads
       run: dotnet workload install maui-android
     - name: Build with dotnet

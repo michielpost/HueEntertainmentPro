@@ -28,7 +28,8 @@
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="12px">
             <FluentText As="TextTag.H4" Size="TextSize.Size500" Weight="TextWeight.Semibold">@proArea.Name</FluentText>
             <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="10px" Style="margin-top: 8px;">
-                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="ShowEditNameDialog" IconStart="@(new Icons.Regular.Size16.Edit())">Edit Name</FluentButton>
+                <FluentButton Appearance="ButtonAppearance.Primary" @onclick="SaveAndGoHome" IconStart="@(new Icons.Regular.Size16.Checkmark())">Save</FluentButton>
+                <FluentButton Appearance="ButtonAppearance.Default" @onclick="ShowEditNameDialog" IconStart="@(new Icons.Regular.Size16.Edit())">Edit Name</FluentButton>
                 <FluentButton Appearance="ButtonAppearance.Default" @onclick="ShowDeleteConfirmation" IconStart="@(new Icons.Regular.Size16.Delete())">Delete Area</FluentButton>
             </FluentStack>
         </FluentStack>
@@ -175,6 +176,12 @@ else
 		{
 			errorMessage = $"Failed to load area details: {ex.Message}";
 		}
+	}
+
+	private void SaveAndGoHome()
+	{
+		// Changes are applied immediately, so saving only means leaving the edit page.
+		Navigation.NavigateTo("");
 	}
 
 	private async Task ShowEditNameDialog()

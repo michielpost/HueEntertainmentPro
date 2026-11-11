@@ -14,8 +14,14 @@ body {
 
 .app-header {
     padding: 0 1.5rem;
+    color: var(--colorNeutralForegroundOnBrand);
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     z-index: 100;
+}
+
+/* Headings use a muted color by default, which is unreadable on the brand colored header */
+.app-header h4 {
+    color: inherit;
 }
 
 .app-footer {
