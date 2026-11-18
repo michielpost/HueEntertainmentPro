@@ -164,11 +164,8 @@ app.Run();
 
 internal static partial class Program
 {
-    // Deletes a database's stale -wal/-shm sidecar files if present, but only when
-    // no other process currently has the database open. Opening the main file with
-    // an exclusive lock succeeds only when nothing else is using it, so any leftover
-    // sidecars at that point are safe to remove (a genuine lock, e.g. a live second
-    // instance, is left untouched to avoid corrupting data).
+    // Deletes a database's stale -wal/-shm sidecar files only when its main file
+    // can be held exclusively for the entire cleanup.
     private static void CleanupStaleWalFiles(string? dbPath)
     {
         if (string.IsNullOrEmpty(dbPath)) return;
@@ -176,29 +173,32 @@ internal static partial class Program
         string[] sidecars = { dbPath + "-wal", dbPath + "-shm" };
         if (!sidecars.Any(File.Exists)) return;
 
-        if (File.Exists(dbPath))
+        if (!File.Exists(dbPath)) return;
+
+        FileStream probe;
+        try
         {
-            try
-            {
-                using var probe = new FileStream(dbPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-            }
-            catch (IOException)
-            {
-                // The database is still in use by another process; leave the files alone.
-                //return;
-            }
+            probe = new FileStream(dbPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        }
+        catch (IOException)
+        {
+            // The database is still in use by another process; leave the files alone.
+            return;
         }
 
-        foreach (var file in sidecars)
+        using (probe)
         {
-            try
+            foreach (var file in sidecars)
             {
-                if (File.Exists(file))
-                    File.Delete(file);
-            }
-            catch (IOException)
-            {
-                // Transiently locked; skip and let startup continue.
+                try
+                {
+                    if (File.Exists(file))
+                        File.Delete(file);
+                }
+                catch (IOException)
+                {
+                    // Transiently locked; skip and let startup continue.
+                }
             }
         }
     }

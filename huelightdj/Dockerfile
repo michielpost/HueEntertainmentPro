@@ -12,7 +12,7 @@
 # portable, architecture-neutral IL (UseAppHost=false, no RID), so the SDK
 # never needs to run under QEMU emulation. Only the final base image is
 # architecture-specific.
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:11.0 AS build
 WORKDIR /src
 
 COPY ["HueEntertainmentPro/Server/HueEntertainmentPro.Server.csproj", "HueEntertainmentPro/Server/"]
@@ -31,7 +31,7 @@ RUN dotnet publish "./HueEntertainmentPro.Server.csproj" -c Release -o /app/publ
 
 # Runtime stage. Not pinned to a platform: Docker Buildx automatically picks
 # the variant matching the target platform (linux/amd64 or linux/arm64).
-FROM mcr.microsoft.com/dotnet/aspnet:10.0
+FROM mcr.microsoft.com/dotnet/aspnet:11.0
 
 LABEL org.opencontainers.image.title="Hue Entertainment Pro" \
       org.opencontainers.image.description="Merge multiple Philips Hue entertainment areas and apply realtime light effects" \

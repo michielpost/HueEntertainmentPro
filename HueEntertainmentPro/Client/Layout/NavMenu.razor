@@ -1,7 +1,8 @@
 <div class="navmenu">
     <nav class="sitenav" aria-labelledby="main-menu">
         <FluentNav Id="main-menu" Width="250px" UseSingleExpanded="true">
-            <FluentNavItem Href="" Match="NavLinkMatch.All" IconRest="@(new Icons.Regular.Size20.Home())">Home</FluentNavItem>
+            @* FluentNavItem renders a non-navigating <button> when Href is empty, so point it at the app root explicitly *@
+            <FluentNavItem Href="./" Match="NavLinkMatch.All" IconRest="@(new Icons.Regular.Size20.Home())">Home</FluentNavItem>
             <FluentNavItem Href="bridges" IconRest="@(new Icons.Regular.Size20.Iot())">Bridges</FluentNavItem>
             <FluentNavItem Href="eventmonitor" IconRest="@(new Icons.Regular.Size20.EarthLeaf())">Event Monitor</FluentNavItem>
             <FluentNavItem Href="resource-explorer" IconRest="@(new Icons.Regular.Size20.ServerMultiple())">Resource Explorer</FluentNavItem>
